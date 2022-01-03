@@ -24,7 +24,8 @@ function updatePrevAndNextButtons() {
     let nextBtn = document.getElementById('button-next');
 
     if (indexStart === 0) {
-        prevBtn.style.display = "none";
+        prevBtn.style.display = 'none';
+        document.querySelector('footer').classList.add('next-button-class');
     } else {
         prevBtn.style.display = "block";
     }
@@ -51,7 +52,7 @@ function createNav(nav) {
         const li = document.createElement('li');
         li.setAttribute('class', 'nav__item');
         const anchor = document.createElement('a');
-        anchor.setAttribute('href', '#/');
+        anchor.setAttribute('href', '');
         anchor.setAttribute('class', 'nav__link');
         anchor.textContent = element;
 
@@ -69,6 +70,8 @@ function renderNavBar(nav) {
     createNav(nav);
 
 }
+
+renderNavBar(nav);
 
 
 // CREATING THE ADD BUTTON
@@ -105,8 +108,6 @@ function getData() {
                         response.status);
                     return;
                 }
-
-                // Examine the text in the response
                 response.json()
                     .then(data => {
                         console.log(data)
@@ -121,7 +122,6 @@ function getData() {
         });
 }
 getData();
-
 
 // CREATE ALL ARTICLES FROM MAIN PAGE 
 function createArticle(articles) {
@@ -189,7 +189,7 @@ function createArticle(articles) {
         domActionDiv.appendChild(deleteButton);
 
         const paragraph = document.createElement('p');
-        paragraph.textContent = element.content.substring(0, element.content.length / 2);
+        paragraph.textContent = element.content.substring(0, element.content.length / 2) + ' ...';
 
         const domContainer = document.createElement('div');
         domContainer.setAttribute('class', 'content__container');
@@ -200,15 +200,15 @@ function createArticle(articles) {
 
         const readMoreAnchor = document.createElement('a');
         readMoreAnchor.setAttribute('class', 'btn-details');
-        readMoreAnchor.setAttribute('href', '#/article' + element.id);
+        readMoreAnchor.setAttribute('href', '#article/' + element.id);
 
         const readMoreButton = document.createElement('button');
         readMoreButton.setAttribute('type', 'button');
         readMoreButton.setAttribute('class', 'button button-details');
-        readMoreAnchor.setAttribute('href', '#/article' + element.id);
+        readMoreAnchor.setAttribute('href', '#article/' + element.id);
         readMoreButton.textContent = 'Read More';
         readMoreButton.addEventListener('click', function() {
-            location.hash = '#/article/' + element.id;
+            location.hash = '#article/' + element.id;
             location.reload();
         })
 
@@ -258,7 +258,6 @@ function createFooter() {
     const nextButton = document.createElement('button');
     nextButton.setAttribute('id', 'button-next');
     nextButton.setAttribute('class', 'footer__link footer__link--next');
-    // nextButton.setAttribute('id', 'button-next')
     nextButton.textContent = 'next';
 
     nextButton.addEventListener('click', () => {
@@ -280,75 +279,40 @@ function renderFooter() {
 }
 
 // CREATE FOOTER FROM DETAILS PAGE
-function detailsFooter(article, artLength, index) {
-    console.log(article);
-    console.log(artLength)
-        // console.log(index[article]);
-    console.log(index)
+function detailsFooter(prevId, nextId) {
+
     const footer = document.createElement('footer');
-    footer.setAttribute('class', 'footer');
-    const previousButton = document.createElement('button');
+    footer.setAttribute('class', 'footer-details');
 
-    previousButton.setAttribute('class', 'footer__link footer__link--previous');
-    previousButton.textContent = 'previous';
+    if (prevId) {
+        let prevBtn = document.createElement("button");
+        prevBtn.setAttribute("class", "footer__link");
+        prevBtn.textContent = "prev";
 
-    const nextButton = document.createElement('button');
-    nextButton.setAttribute('id', 'button-next');
-    nextButton.setAttribute('class', 'footer__link footer__link--next');
-    nextButton.textContent = 'next';
-
-    // if (location.hash.includes('#/article/1')) {
-    //     previousButton.style.visibility = 'hidden';
-    // } else if (location.hash.includes(`#/article/` + artLength)) {
-    //     nextButton.style.visibility = 'hidden';
-    // }
-    if (location.hash.includes('#/article/1')) {
-        previousButton.style.visibility = 'hidden';
-    } else if (location.hash.includes(`#/article/` + artLength)) {
-        nextButton.style.visibility = 'hidden';
+        prevBtn.addEventListener('click', function() {
+            location.hash = `#article/${prevId}`;
+            location.reload();
+        })
+        footer.appendChild(prevBtn);
     }
-    // nextButton.addEventListener('click', function() {
-    //     if (article.id >= 1 && article.id < artLength) {
-    //         // changing the route to the next article
-    //         location.hash = '#/article' + (article.id + 1);
-    //         // reloading page
-    //         location.reload();
-    //     }
-    // })
+    if (nextId) {
+        let prevDiv = document.createElement("div");
+        let nextBtn = document.createElement("button");
+        nextBtn.setAttribute("class", "footer__link footer__link--next");
+        nextBtn.textContent = "next";
 
-    nextButton.addEventListener('click', function() {
-        if (article.id >= 1 && article.id < artLength) {
-            // changing the route to the next article
-            location.hash = '#/article/' + (article.id + 1);
-            // reloading page
+        nextBtn.addEventListener('click', function() {
+            location.hash = `#article/${nextId}`;
             location.reload();
-        }
-    })
-
-    previousButton.addEventListener("click", function() {
-        if (article.id <= artLength) {
-            // changing the route to the previous article
-            location.hash = '#/article/' + (article.id - 1);
-            // reload the page
-            location.reload();
-        }
-    })
-
-    footer.appendChild(previousButton);
-    footer.appendChild(nextButton);
-
+        })
+        footer.appendChild(prevDiv);
+        footer.appendChild(nextBtn);
+    }
     return footer;
 }
 
-// RENDERING FOOTER FROM DETAILS PAGE
-function renderDetailsFooter(article, artLength) {
-    const domFooter = detailsFooter(article, artLength);
-    root.appendChild(domFooter);
-    detailsFooter(article, artLength);
-}
 
-// CREATING ONE DETAILED ARTICLE
-function createArticleDetails(article) {
+function createDetailsArticle(article) {
     const domArticle = document.createElement('article');
 
     const divArticle = document.createElement('div');
@@ -407,35 +371,44 @@ function createArticleDetails(article) {
     return domArticle;
 }
 
+// CREATING ONE DETAILED ARTICLE
+function fetchArticleDetails() {
+    let currLocation = window.location.hash;
+    console.log(currLocation);
+    if (currLocation.startsWith('#article')) {
+        const articleId = location.hash.substring(9);
 
-// RENDERING THE ARTICLE CREATED ABOVE
-function renderSingleArticleDetails(article) {
-    const domArticle = createArticleDetails(article);
-    root.appendChild(domArticle);
-    createArticleDetails(article);
+        if (articleId) {
+            fetch(`http://localhost:3007/articles/${articleId}`)
+                .then(
+                    function(response) {
 
-}
+                        // Examine the text in the response
+                        response.json().then(function(data) {
+                            if (response.status === 200) {
+
+                                let main = document.createElement('main');
+                                main.setAttribute('class', 'main-details');
+                                const articleRendering = createDetailsArticle(data);
+                                main.appendChild(articleRendering);
 
 
-// iterating through all articles and render single article depending of the hash
-function renderAllArticlesDetails(articles) {
-    clearRoot();
-    console.log(articles)
-    Array.from(articles).forEach((item, index) => {
-        if (location.hash.includes(item.id)) {
-            renderNavBar(nav);
-            renderSingleArticleDetails(item);
-            renderDetailsFooter(item, articles.length, index);
+                                const footerRendering = detailsFooter(data.prevId, data.nextId);
+                                main.appendChild(footerRendering);
+
+                                root.appendChild(main);
+                                window.onhashchange = locationHashChange(data);
+
+                            }
+                        })
+
+                    })
+                .catch(function(err) {
+                    console.log('Fetch Error :-S', err);
+                });
         }
-    });
+    }
 
-    // for (let i = 1; i < articles.length; i++) {
-    //     if (location.hash === '#/article/' + (i)) {
-    //         renderNavBar(nav);
-    //         renderSingleArticleDetails(articles[i]);
-    //         renderDetailsFooter(articles[i], articles.length, i);
-    //     }
-    // }
 }
 
 function page404() {
@@ -450,7 +423,7 @@ function page404() {
     goToHomepageButton.setAttribute('class', 'to-homepage');
     goToHomepageButton.textContent = 'BACK TO HOMEPAGE';
     goToHomepageButton.addEventListener('click', function() {
-        location.hash = '#/';
+        location.hash = '';
         location.reload();
     })
 
@@ -593,28 +566,49 @@ function editArticle(article) {
 
     let saveModalButton = document.querySelector('.button-edit-modal');
     saveModalButton.addEventListener('click', function() {
-        updateArticle(article.id)
+        updateArticle(article.id);
+        window.reload();
+
     })
 }
-console.log(location.hash.substring(10))
+console.log(location.hash.substring(9))
     // CREATE HASH ROUTE
 function locationHashChange(articles) {
+    let articlesIds = articles.map(item => item.id);
+    console.log(articlesIds)
 
-    if (location.hash === '#/') {
+    if (location.hash === '') {
         renderArticle(articles);
         return;
     } else {
         let currentWindowHash = window.location.hash;
-        let articleId = currentWindowHash.substring(10);
-        if (Number(articleId) <= articles.length)
-            renderAllArticlesDetails(articles);
-        else {
+        let articleId = currentWindowHash.substring(9);
+        if (articlesIds.includes(articleId)) {
+            fetchArticleDetails()
+        } else {
             page404();
         }
     }
 
 }
 
+function clearForm() {
+    let title = document.getElementById('title');
+    let tag = document.getElementById('tag');
+    let author = document.getElementById('author');
+    let date = document.getElementById('date');
+    let imgUrl = document.getElementById('url');
+    let saying = document.getElementById('saying');
+    let textarea = document.getElementById('textarea');
+
+    title.value = '';
+    tag.value = '';
+    author.value = '';
+    date.value = '';
+    imgUrl.value = '';
+    saying.value = '';
+    textarea.value = '';
+}
 
 // GETTING THE ELEMENTS TO CLOSE THE MODAL
 let modalOverlay = document.querySelector(".modal__overlay");
@@ -627,22 +621,28 @@ function openModal() {
 }
 
 // CLOSING THE MODAL
-closeModal.addEventListener("click", function() {
+closeModal.addEventListener("click", hideModal)
+
+function hideModal() {
     modalOverlay.style.visibility = "hidden";
     modalOverlay.style.opacity = 0;
-
-    // location.hash = "#/";
-    // location.reload();
-})
+}
 
 // DELETING ARTICLE DEPENDING ON THE ID, function called directly where the delete button is created (createArticle)
 function deleteArticle(id) {
-    fetch('http://localhost:3000/articles/' + id, {
+    fetch('http://localhost:3007/articles/' + id, {
             method: "DELETE",
         })
         .then(response => response.json())
         .then(data => {
-            console.log(data, id)
+
+            if (totalNumberOfArticles % numberOfArticles === 1) {
+                indexStart = indexStart - numberOfArticles;
+                indexEnd = indexEnd - numberOfArticles;
+            }
+            getData();
+
+
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -679,14 +679,16 @@ function createNewArticle() {
 
     }).then(res => res.json())
 
-    .then(data =>
+    .then(data => {
+        hideModal()
+        clearForm()
+        getData()
 
-        console.log(data))
+    })
+
 
     .catch((err) => console.log(err));
 }
-
-
 
 // EDITING ARTICLE
 function updateArticle(id) {
@@ -707,7 +709,7 @@ function updateArticle(id) {
         saying: saying,
         content: textarea,
     }
-    fetch('http://localhost:3000/articles/' + id, {
+    fetch('http://localhost:3007/articles/' + id, {
             method: 'PUT',
             headers: {
                 "Content-type": "application/json"
@@ -716,8 +718,8 @@ function updateArticle(id) {
         })
         .then(response => response.json())
         .then((data) => {
-
-            window.onhashchange = locationHashChange(data);
+            hideModal();
+            getData();
 
         })
         .catch(error => {
@@ -725,12 +727,6 @@ function updateArticle(id) {
         });
 }
 
-
-// paragraphs split DONE
-// not found page/page DONE
-// previous/next buttons
-// refactoring DONE
-// prev and next for main page - only 4 articles per page
 
 // DARK MODE
 const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
