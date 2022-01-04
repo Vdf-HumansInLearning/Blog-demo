@@ -384,3 +384,7 @@ button.to-homepage {
     color: white;
     border: none;
 }
+
+.next-button-class {
+    flex-direction: row-reverse;
+}
