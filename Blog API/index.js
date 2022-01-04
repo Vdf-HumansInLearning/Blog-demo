@@ -1,4 +1,3 @@
-// Import packages
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
@@ -19,12 +18,7 @@ app.use(cors());
 app.get("/articles/:id", (req, res) => {
     const articlesList = readJSONFile();
     const id = req.params.id;
-    // let article = articlesList.find(article => article.id == id);
 
-
-    // for (let i = 0; i < articlesList.length; i++) {
-    //     console.log(articlesList[i])
-    // }
     let article;
     for (let i = 0; i < articlesList.length; i++) {
         if (articlesList[i].id == id) {
@@ -39,19 +33,8 @@ app.get("/articles/:id", (req, res) => {
     res.json(article);
 });
 
-
-
 app.post("/articles", (req, res) => {
     const articlesList = readJSONFile();
-    // const bodyInfo = req.body;
-    // const newArticle = {
-
-    //         ...bodyInfo
-    //     }
-    //     // modify articleList to add a new element
-    // const newArticleList = [...articlesList, newArticle];
-    // writeJSONFile(newArticleList);
-    // res.json(newArticle);
 
     let title = req.body.title;
     let tag = req.body.tag;
@@ -60,7 +43,6 @@ app.post("/articles", (req, res) => {
     let imgUrl = req.body.imgUrl;
     let saying = req.body.saying;
     let content = req.body.content
-        // save dogsList to file
 
     articlesList.push({
         "id": uuidv4(),
@@ -79,17 +61,14 @@ app.post("/articles", (req, res) => {
 
 
 // Read All
-
 app.get("/articles", (req, res) => {
     const articlesList = readJSONFile();
-    // res.json(articlesList);
 
     let indexStart = req.query.indexStart;
     let indexEnd = req.query.indexEnd;
     console.log(articlesList);
     console.log(req);
     if (indexStart === undefined || indexEnd === undefined) {
-        // res.json(articlesList);
         let articlesListObject = {
             articles: articlesList,
             numberOfArticles: articlesList.length
@@ -97,13 +76,11 @@ app.get("/articles", (req, res) => {
         res.json(articlesListObject);
     } else {
         let newArticlesList = articlesList.filter((article, index) => indexStart <= index && indexEnd >= index);
-        // res.json(newArticlesList);
         let articlesListObject = {
             articlesList: newArticlesList,
             numberOfArticles: articlesList.length
         }
         res.json(articlesListObject);
-        // res.json(newArticlesList)
     }
 
 });
@@ -121,8 +98,31 @@ app.put("/articles/:id", (req, res) => {
     articlesList[index] = {...updatedArticle, id: articlesList[index].id };
     writeJSONFile(articlesList);
     res.json(articlesList[index])
-        // Fill in your code here
 });
+
+app.delete("/articles/:id", (req, res) => {
+    const articlesList = readJSONFile();
+    const articleId = req.params.id;
+    let articleIndex = '';
+
+    if (!articleId) {
+        res.status(404).json({ message: 'article not found' });
+        return;
+    }
+    articlesList.forEach((item, index) => {
+        if (item.id == articleId) {
+            articleIndex = index;
+        }
+    })
+
+    if (articleIndex === '') {
+        res.status(404).json({ message: 'article not found!' });
+        return;
+    }
+    const newArticleList = articlesList.filter(item => item.id != articleId);
+    writeJSONFile(newArticleList);
+    res.json({ message: 'article has been deleted' })
+})
 
 // Reading function from db.json file
 function readJSONFile() {
