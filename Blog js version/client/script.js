@@ -144,11 +144,11 @@ function createArticle(articles) {
 
         const domList2 = document.createElement('li');
         domList2.setAttribute('class', 'info__item');
-        domList2.textContent = element.author;
+        domList2.textContent = 'Added by ';
 
         const domSpan = document.createElement('span');
         domSpan.setAttribute('class', 'info__mark point');
-        domSpan.textContent = 'Jonnathan Mercadina';
+        domSpan.textContent = element.author;
         const domList3 = document.createElement('li');
         domList3.setAttribute('class', 'info__item');
         domList3.textContent = element.date;
@@ -331,11 +331,11 @@ function createDetailsArticle(article) {
 
     const domList2 = document.createElement('li');
     domList2.setAttribute('class', 'info__item');
-    domList2.textContent = article.author;
+    domList2.textContent = 'Added by ';
 
     const domSpan = document.createElement('span');
     domSpan.setAttribute('class', 'info__mark point');
-    domSpan.textContent = 'Jonnathan Mercadina';
+    domSpan.textContent = article.author;
 
     const domList3 = document.createElement('li');
     domList3.setAttribute('class', 'info__item');
