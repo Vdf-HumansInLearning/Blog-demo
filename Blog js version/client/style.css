@@ -55,6 +55,7 @@ a.nav__link {
 
 .add__container {
     text-align: right;
+    /* margin-right: 50px; */
     height: 60px;
     margin-bottom: 90px;
 }
@@ -173,6 +174,14 @@ button.footer__link {
 }
 
 footer.footer {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 35px;
+    margin-bottom: 100px;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.footer-details {
     display: flex;
     justify-content: space-between;
     margin-top: 35px;
