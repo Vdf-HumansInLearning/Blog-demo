@@ -1,9 +1,14 @@
 const root = document.getElementById('root');
+const static = document.getElementById('static');
 
 let numberOfArticles = 4;
 let indexStart = 0;
 let indexEnd = numberOfArticles - 1;
 let totalNumberOfArticles = 0;
+
+function articleListInit() {
+    renderAddButton();
+}
 
 function updateStartEndIndexes(button) {
     if (button === 'next') {
@@ -27,13 +32,13 @@ function updatePrevAndNextButtons() {
         prevBtn.style.display = 'none';
         document.querySelector('footer').classList.add('next-button-class');
     } else {
-        prevBtn.style.display = "block";
+        prevBtn.style.display = 'block';
     }
 
     if (indexEnd >= totalNumberOfArticles - 1) {
-        nextBtn.style.display = "none";
+        nextBtn.style.display = 'none';
     } else {
-        nextBtn.style.display = "block";
+        nextBtn.style.display = 'block';
     }
 }
 
@@ -66,13 +71,18 @@ function createNav(nav) {
 
 function renderNavBar(nav) {
     const domNavBar = createNav(nav);
-    root.appendChild(domNavBar);
+    static.appendChild(domNavBar);
     createNav(nav);
 
 }
 
-renderNavBar(nav);
+// renderNavBar(nav);
 
+function appInit() {
+    renderNavBar(nav)
+}
+
+appInit();
 
 // CREATING THE ADD BUTTON
 
@@ -92,13 +102,12 @@ function createAddButton() {
 
 function renderAddButton() {
     const domButton = createAddButton();
-    root.appendChild(domButton);
+    static.appendChild(domButton);
     createAddButton();
 }
 
-
 // TAKING DATA FROM SERVER
-function getData() {
+function getArticleList() {
     fetch(`http://localhost:3007/articles?indexStart=${indexStart}&indexEnd=${indexEnd}`)
         .then(
             function(response) {
@@ -110,10 +119,11 @@ function getData() {
                 }
                 response.json()
                     .then(data => {
-                        console.log(data)
-                        window.onhashchange = locationHashChange(data.articlesList);
+                        console.log(data);
+                        createDomArticleList(data.articlesList);
                         totalNumberOfArticles = data.numberOfArticles;
                         updatePrevAndNextButtons();
+                        document.getElementById('loader').style.display = 'none';
                     });
             }
         )
@@ -121,7 +131,14 @@ function getData() {
             console.log('Fetch Error :-S', err);
         });
 }
-getData();
+// getData();
+
+
+// show loading spinner
+// fetch data
+// create DOM from data 
+// === render page!
+
 
 // CREATE ALL ARTICLES FROM MAIN PAGE 
 function createArticle(articles) {
@@ -181,9 +198,14 @@ function createArticle(articles) {
         deleteButton.setAttribute('type', 'button');
         deleteButton.setAttribute('class', 'actions__btn');
         deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', function() {
-            deleteArticle(element.id);
-        })
+        deleteButton.addEventListener('click', () => {
+            openModalAlert();
+            let btnDeleteAlert = document.querySelector('.deleteAlertBtn');
+            btnDeleteAlert.addEventListener('click', () => {
+                deleteArticle(element.id);
+                hideModalAlert();
+            })
+        });
 
         domActionDiv.appendChild(editButton);
         domActionDiv.appendChild(deleteButton);
@@ -230,10 +252,10 @@ function createArticle(articles) {
 }
 
 // RENDERING ALL ARTICLES FROM MAIN PAGE
-function renderArticle(articles) {
+function createDomArticleList(articles) {
     clearRoot();
-    renderNavBar(nav);
-    renderAddButton();
+    // move rendernav in appInit and addbutton in an articleListInit functions
+
     const domArticle = createArticle(articles);
     root.appendChild(domArticle);
     createArticle(articles);
@@ -252,7 +274,7 @@ function createFooter() {
 
     previousButton.addEventListener('click', function() {
         updateStartEndIndexes('previous');
-        getData();
+        getArticleList();
     });
 
     const nextButton = document.createElement('button');
@@ -262,7 +284,7 @@ function createFooter() {
 
     nextButton.addEventListener('click', () => {
         updateStartEndIndexes('next');
-        getData();
+        getArticleList();
     });
 
     footer.appendChild(previousButton);
@@ -285,9 +307,9 @@ function detailsFooter(prevId, nextId) {
     footer.setAttribute('class', 'footer-details');
 
     if (prevId) {
-        let prevBtn = document.createElement("button");
-        prevBtn.setAttribute("class", "footer__link");
-        prevBtn.textContent = "prev";
+        let prevBtn = document.createElement('button');
+        prevBtn.setAttribute('class', 'footer__link');
+        prevBtn.textContent = 'prev';
 
         prevBtn.addEventListener('click', function() {
             location.hash = `#article/${prevId}`;
@@ -296,10 +318,10 @@ function detailsFooter(prevId, nextId) {
         footer.appendChild(prevBtn);
     }
     if (nextId) {
-        let prevDiv = document.createElement("div");
-        let nextBtn = document.createElement("button");
-        nextBtn.setAttribute("class", "footer__link footer__link--next");
-        nextBtn.textContent = "next";
+        let prevDiv = document.createElement('div');
+        let nextBtn = document.createElement('button');
+        nextBtn.setAttribute('class', 'footer__link footer__link--next');
+        nextBtn.textContent = 'next';
 
         nextBtn.addEventListener('click', function() {
             location.hash = `#article/${nextId}`;
@@ -385,7 +407,7 @@ function fetchArticleDetails() {
 
                         // Examine the text in the response
                         response.json().then(function(data) {
-                            if (response.status === 200) {
+                            if (data.status !== 404) {
 
                                 let main = document.createElement('main');
                                 main.setAttribute('class', 'main-details');
@@ -397,8 +419,10 @@ function fetchArticleDetails() {
                                 main.appendChild(footerRendering);
 
                                 root.appendChild(main);
-                                window.onhashchange = locationHashChange(data);
+                                document.getElementById('loader').style.display = 'none';
 
+                            } else {
+                                location.hash = 'not-found';
                             }
                         })
 
@@ -433,18 +457,18 @@ function page404() {
 }
 
 // CREATE MODAL
-let modal = document.getElementById("modal-box");
+let modal = document.getElementById('modal-box');
 
 function createModal() {
     const modalDiv = document.createElement('div');
-    modalDiv.setAttribute('class', 'modal');
+    modalDiv.setAttribute('class', 'modala');
 
     const modalContent = document.createElement('div');
     modalContent.setAttribute('class', 'modal__content');
 
     const modalTitle = document.createElement('h2');
     modalTitle.setAttribute('class', 'title modal-title');
-    modalTitle.textContent = "Add/Edit article";
+    modalTitle.textContent = 'Add/Edit article';
 
     const inputsContainer = document.createElement('div');
     inputsContainer.setAttribute('class', 'inputs__container');
@@ -541,6 +565,60 @@ function renderModal() {
 
 renderModal();
 
+// CREATE MODAL ALERT
+let modalAlert = document.getElementById('modal-alert');
+
+function createModalAlert() {
+    const divAlert = document.createElement('div');
+    divAlert.setAttribute('id', 'id01');
+    divAlert.setAttribute('class', 'modalAlert');
+
+    const formAlert = document.createElement('div');
+    formAlert.setAttribute('class', 'modal-content');
+    formAlert.setAttribute('action', '/action_page.php');
+
+    const divAlertContainer = document.createElement('div');
+    divAlertContainer.setAttribute('class', 'alertContainer');
+
+    const titleAlert = document.createElement('h1');
+    titleAlert.setAttribute('class', 'alert-title')
+    titleAlert.textContent = 'Delete Article';
+
+    const paragraphAlert = document.createElement('p');
+    paragraphAlert.setAttribute('class', 'alert-delete-p')
+    paragraphAlert.textContent = 'Are you sure you want to delete this article?';
+
+    const divClearFix = document.createElement('div');
+    divClearFix.setAttribute('class', 'clearfix');
+
+    const cancelAlertBtn = document.createElement('button');
+    cancelAlertBtn.setAttribute('type', 'button');
+    cancelAlertBtn.setAttribute('class', 'cancelAlertBtn');
+    cancelAlertBtn.textContent = 'Cancel';
+
+    const deleteAlertBtn = document.createElement('button');
+    deleteAlertBtn.setAttribute('type', 'button');
+    deleteAlertBtn.setAttribute('class', 'deleteAlertBtn');
+    deleteAlertBtn.textContent = 'Delete';
+
+    divAlert.appendChild(formAlert);
+    formAlert.appendChild(divAlertContainer);
+    divAlertContainer.appendChild(titleAlert);
+    divAlertContainer.appendChild(paragraphAlert);
+    divAlertContainer.appendChild(divClearFix);
+    divClearFix.appendChild(cancelAlertBtn);
+    divClearFix.appendChild(deleteAlertBtn);
+
+    return divAlert;
+}
+// RENDER THE MODAL
+function renderModalAlert() {
+    const domModalAlert = createModalAlert();
+    modalAlert.appendChild(domModalAlert);
+    createModalAlert();
+}
+renderModalAlert();
+
 // CLEAR THE CONTENT
 function clearRoot() {
     root.innerHTML = '';
@@ -573,23 +651,43 @@ function editArticle(article) {
 }
 console.log(location.hash.substring(9))
     // CREATE HASH ROUTE
-function locationHashChange(articles) {
-    let articlesIds = articles.map(item => item.id);
-    console.log(articlesIds)
+function locationHashChange() {
+    const hash = location.hash;
 
-    if (location.hash === '') {
-        renderArticle(articles);
+    if (hash === '') {
+        // renderArticle(articles);
+        renderArticleListPage()
         return;
-    } else {
-        let currentWindowHash = window.location.hash;
-        let articleId = currentWindowHash.substring(9);
-        if (articlesIds.includes(articleId)) {
-            fetchArticleDetails()
-        } else {
-            page404();
-        }
     }
+    if (hash === 'not-found') {
+        document.getElementById('loader').style.display = 'none';
+        page404();
+        return;
+    }
+    if (hash.includes('#article/') && hash.substring(9)) {
+        fetchArticleDetails();
+        return;
+    }
+    document.getElementById('loader').style.display = 'none';
+    page404();
+    // hash === '' renderArticle()
+    // hash.includes('article) si dupa article este '/' plus string => fetchArticleDetails()
+    // hash.includes('not-found'), render page404()
+    // daca nu exista ruta de mai sus, page404()
+}
 
+window.onhashchange = locationHashChange();
+
+function renderArticleListPage() {
+    createDomSpinner();
+    articleListInit();
+    getArticleList();
+
+}
+
+function createDomSpinner() {
+    document.getElementById('loader').style.display = 'block';
+    // document.getElementById('myDiv').style.display = 'block';
 }
 
 function clearForm() {
@@ -611,27 +709,44 @@ function clearForm() {
 }
 
 // GETTING THE ELEMENTS TO CLOSE THE MODAL
-let modalOverlay = document.querySelector(".modal__overlay");
-let closeModal = document.querySelector(".close-modal")
+let modalOverlay = document.querySelector('.modal__overlay');
+let closeModal = document.querySelector('.close-modal')
 
 // OPEN MODAL FUNCTION, called directly in the function that creates the ADD BUTTON
 function openModal() {
-    modalOverlay.style.visibility = "visible";
+    modalOverlay.style.visibility = 'visible';
     modalOverlay.style.opacity = 1;
 }
 
 // CLOSING THE MODAL
-closeModal.addEventListener("click", hideModal)
+closeModal.addEventListener('click', hideModal)
 
 function hideModal() {
-    modalOverlay.style.visibility = "hidden";
+    modalOverlay.style.visibility = 'hidden';
     modalOverlay.style.opacity = 0;
+}
+
+// GETTING THE ELEMENTS TO CLOSE THE MODAL ALERT
+let modalOverlayAlert = document.querySelector('.modal__overlay__alert');
+let closeModalAlert = document.querySelector('.cancelAlertBtn');
+// OPEN MODAL ALERT FUNCTION, called directly in the function that creates the ADD BUTTON
+function openModalAlert() {
+    document.getElementById('id01').style.display = 'block';
+    modalOverlayAlert.style.visibility = 'visible';
+    modalOverlayAlert.style.opacity = 1;
+}
+// CLOSING THE MODAL ALERT
+closeModalAlert.addEventListener('click', hideModalAlert);
+
+function hideModalAlert() {
+    modalOverlayAlert.style.visibility = 'hidden';
+    modalOverlayAlert.style.opacity = 0;
 }
 
 // DELETING ARTICLE DEPENDING ON THE ID, function called directly where the delete button is created (createArticle)
 function deleteArticle(id) {
     fetch('http://localhost:3007/articles/' + id, {
-            method: "DELETE",
+            method: 'DELETE',
         })
         .then(response => response.json())
         .then(data => {
@@ -640,7 +755,7 @@ function deleteArticle(id) {
                 indexStart = indexStart - numberOfArticles;
                 indexEnd = indexEnd - numberOfArticles;
             }
-            getData();
+            getArticleList();
 
 
         })
@@ -667,14 +782,14 @@ function createNewArticle() {
         },
 
         body: JSON.stringify({
-            "title": title,
-            "imgUrl": imgUrl,
-            "imgAlt": 'photo',
-            "content": textarea,
-            "tag": tag,
-            "author": author,
-            "date": date,
-            "saying": saying,
+            'title': title,
+            'imgUrl': imgUrl,
+            'imgAlt': 'photo',
+            'content': textarea,
+            'tag': tag,
+            'author': author,
+            'date': date,
+            'saying': saying,
         })
 
     }).then(res => res.json())
@@ -682,7 +797,7 @@ function createNewArticle() {
     .then(data => {
         hideModal()
         clearForm()
-        getData()
+        getArticleList();
 
     })
 
@@ -712,15 +827,15 @@ function updateArticle(id) {
     fetch('http://localhost:3007/articles/' + id, {
             method: 'PUT',
             headers: {
-                "Content-type": "application/json"
+                'Content-type': 'application/json'
             },
             body: JSON.stringify(putObject),
         })
         .then(response => response.json())
         .then((data) => {
             hideModal();
-            getData();
-
+            clearForm();
+            getArticleList();
         })
         .catch(error => {
             console.error('Error:', error);

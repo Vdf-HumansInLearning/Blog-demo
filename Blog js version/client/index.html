@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Cardo|Montserrat" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="stylesheet" href="./style.css">
@@ -13,17 +14,28 @@
 </head>
 
 <body>
+    <div id="loader"></div>
+
+    <div style="display:none;" id="myDiv" class="animate-bottom"></div>
+
     <div class="theme-switch-box">
         <label class="theme-switch" for="switch">
             <input type="checkbox" id="switch" />
             <div class="slider round"></div>
       </label>
     </div>
+    <div id="static">
+
+    </div>
     <div id="root" class="main">
 
     </div>
 
     <div id="modal-box" class="modal__overlay">
+
+    </div>
+
+    <div id="modal-alert" class="modal__overlay__alert">
 
     </div>
 

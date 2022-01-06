@@ -20,6 +20,7 @@ app.get("/articles/:id", (req, res) => {
     const id = req.params.id;
 
     let article;
+
     for (let i = 0; i < articlesList.length; i++) {
         if (articlesList[i].id == id) {
             const nextId = i === articlesList.length - 1 ? null : articlesList[i + 1].id;
@@ -30,6 +31,9 @@ app.get("/articles/:id", (req, res) => {
         }
     }
 
+    if (article === undefined) {
+        article = { message: 'article not found', status: 404 };
+    }
     res.json(article);
 });
 
