@@ -724,6 +724,7 @@ closeModal.addEventListener('click', hideModal)
 function hideModal() {
     modalOverlay.style.visibility = 'hidden';
     modalOverlay.style.opacity = 0;
+    clearForm();
 }
 
 // GETTING THE ELEMENTS TO CLOSE THE MODAL ALERT
@@ -795,8 +796,8 @@ function createNewArticle() {
     }).then(res => res.json())
 
     .then(data => {
-        hideModal()
-        clearForm()
+        hideModal();
+        clearForm();
         getArticleList();
 
     })
