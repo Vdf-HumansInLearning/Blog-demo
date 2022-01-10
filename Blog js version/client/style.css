@@ -134,8 +134,9 @@ span.info__mark {
     cursor: pointer;
 }
 
-.actions__btn.border {
-    border-right: 1px solid var(--primary-color-font);
+.border {
+    border: none !important;
+    border-right: 1px solid var(--primary-color-font) !important;
     padding-right: 6px;
 }
 
@@ -253,7 +254,6 @@ textarea.textarea {
     padding-left: 10px;
     color: var(--light-grey);
     border: 1px solid var(--primary-color-font);
-    ;
     border-radius: 5px;
     font-family: 'Cardo', serif;
     margin: 0px 75px;

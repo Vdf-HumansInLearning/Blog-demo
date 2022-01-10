@@ -1,5 +1,6 @@
 const root = document.getElementById('root');
 const static = document.getElementById('static');
+let articleId = null;
 
 let numberOfArticles = 4;
 let indexStart = 0;
@@ -43,7 +44,7 @@ function updatePrevAndNextButtons() {
 }
 
 // CREATING NAV BAR
-const nav = ['Travel updates', 'Reviews', 'About', 'Contact'];
+const nav = ['Home', 'Travel updates', 'Reviews', 'About', 'Contact'];
 
 function createNav(nav) {
     const navBar = document.createElement('nav');
@@ -57,9 +58,12 @@ function createNav(nav) {
         const li = document.createElement('li');
         li.setAttribute('class', 'nav__item');
         const anchor = document.createElement('a');
-        anchor.setAttribute('href', '');
+        anchor.setAttribute('href', '#');
         anchor.setAttribute('class', 'nav__link');
         anchor.textContent = element;
+        if (element === 'Home') {
+            anchor.setAttribute('href', '')
+        }
 
         ul.appendChild(li);
         li.appendChild(anchor);
@@ -69,6 +73,7 @@ function createNav(nav) {
     return navBar;
 }
 
+// renderNavBar(nav);
 function renderNavBar(nav) {
     const domNavBar = createNav(nav);
     static.appendChild(domNavBar);
@@ -76,8 +81,8 @@ function renderNavBar(nav) {
 
 }
 
-// renderNavBar(nav);
 
+// initializing navbar 
 function appInit() {
     renderNavBar(nav)
 }
@@ -95,6 +100,8 @@ function createAddButton() {
     button.textContent = '+ Add Article';
     button.addEventListener('click', function() {
         openModal();
+        document.querySelector('.button--pink').style.display = 'block';
+        document.querySelector('.button-edit-modal').style.display = 'none';
     })
     div.appendChild(button);
     return div;
@@ -197,14 +204,23 @@ function createArticle(articles) {
         const deleteButton = document.createElement('button');
         deleteButton.setAttribute('type', 'button');
         deleteButton.setAttribute('class', 'actions__btn');
+        deleteButton.setAttribute('id', element.id);
         deleteButton.textContent = 'Delete';
+
+
         deleteButton.addEventListener('click', () => {
+            articleId = element.id;
             openModalAlert();
-            let btnDeleteAlert = document.querySelector('.deleteAlertBtn');
-            btnDeleteAlert.addEventListener('click', () => {
-                deleteArticle(element.id);
-                hideModalAlert();
-            })
+
+            // let btnDeleteAlert = document.querySelector('.deleteAlertBtn');
+            // btnDeleteAlert.addEventListener('click', (e) => {
+            //     console.log(e);
+
+            //     // if (e.target === btnDeleteAlert) {
+            //     deleteArticle(element.id);
+            //     hideModalAlert();
+            //     // }
+            // })
         });
 
         domActionDiv.appendChild(editButton);
@@ -595,6 +611,7 @@ function createModalAlert() {
     cancelAlertBtn.setAttribute('type', 'button');
     cancelAlertBtn.setAttribute('class', 'cancelAlertBtn');
     cancelAlertBtn.textContent = 'Cancel';
+    cancelAlertBtn.addEventListener('click', hideModalAlert);
 
     const deleteAlertBtn = document.createElement('button');
     deleteAlertBtn.setAttribute('type', 'button');
@@ -687,7 +704,6 @@ function renderArticleListPage() {
 
 function createDomSpinner() {
     document.getElementById('loader').style.display = 'block';
-    // document.getElementById('myDiv').style.display = 'block';
 }
 
 function clearForm() {
@@ -735,23 +751,42 @@ function openModalAlert() {
     document.getElementById('id01').style.display = 'block';
     modalOverlayAlert.style.visibility = 'visible';
     modalOverlayAlert.style.opacity = 1;
+
 }
+
+// add event listener for the delete button from modal
+let btnDeleteAlert = document.querySelector('.deleteAlertBtn');
+btnDeleteAlert.addEventListener('click', (e) => {
+    deleteArticle(articleId);
+    hideModalAlert();
+    e.stopPropagation();
+
+})
+
+
 // CLOSING THE MODAL ALERT
-closeModalAlert.addEventListener('click', hideModalAlert);
+closeModalAlert.addEventListener('click', function(e) {
+    hideModalAlert();
+});
 
 function hideModalAlert() {
+    console.log('hidden alert')
     modalOverlayAlert.style.visibility = 'hidden';
     modalOverlayAlert.style.opacity = 0;
 }
 
 // DELETING ARTICLE DEPENDING ON THE ID, function called directly where the delete button is created (createArticle)
-function deleteArticle(id) {
-    fetch('http://localhost:3007/articles/' + id, {
+function deleteArticle() {
+    if (!articleId) {
+        return;
+    }
+    console.log('aa', articleId)
+    fetch('http://localhost:3007/articles/' + articleId, {
             method: 'DELETE',
         })
         .then(response => response.json())
         .then(data => {
-
+            articleId = null;
             if (totalNumberOfArticles % numberOfArticles === 1) {
                 indexStart = indexStart - numberOfArticles;
                 indexEnd = indexEnd - numberOfArticles;
@@ -761,6 +796,7 @@ function deleteArticle(id) {
 
         })
         .catch((error) => {
+            articleId = null;
             console.error('Error:', error);
         });
 }
@@ -776,34 +812,41 @@ function createNewArticle() {
     let saying = document.getElementById('saying').value;
     let textarea = document.getElementById('textarea').value;
 
-    fetch('http://localhost:3007/articles', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+    if (title && tag && author && date && imgUrl && saying && textarea) {
 
-        body: JSON.stringify({
-            'title': title,
-            'imgUrl': imgUrl,
-            'imgAlt': 'photo',
-            'content': textarea,
-            'tag': tag,
-            'author': author,
-            'date': date,
-            'saying': saying,
+
+        fetch('http://localhost:3007/articles', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({
+                'title': title,
+                'imgUrl': imgUrl,
+                'imgAlt': 'photo',
+                'content': textarea,
+                'tag': tag,
+                'author': author,
+                'date': date,
+                'saying': saying,
+            })
+
+        }).then(res => res.json())
+
+        .then(data => {
+            hideModal();
+            clearForm();
+            alert(`A new article with title ${title} was created! Click OK!`)
+            getArticleList();
+
         })
 
-    }).then(res => res.json())
 
-    .then(data => {
-        hideModal();
-        clearForm();
-        getArticleList();
-
-    })
-
-
-    .catch((err) => console.log(err));
+        .catch((err) => console.log(err));
+    } else {
+        alert('Please complete all fields!')
+    }
 }
 
 // EDITING ARTICLE
