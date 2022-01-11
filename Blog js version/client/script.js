@@ -111,8 +111,8 @@ function createAddButton() {
     div.setAttribute('class', 'add__container');
     const button = document.createElement('button');
     button.setAttribute('type', 'button');
-    button.setAttribute('class', 'button open-modal');
-    button.textContent = '+ Add Article';
+    button.setAttribute('class', 'button open-modal fas fa-plus');
+    button.textContent = ' Add Article';
     button.addEventListener('click', function() {
         openModal();
         document.querySelector('.button--pink').style.display = 'block';
@@ -370,10 +370,15 @@ function createDetailsArticle(article) {
     domDate.setAttribute('class', 'info__item');
     domDate.textContent = article.date;
 
+    
+
     domUl.appendChild(domTag);
     domUl.appendChild(domAuthor);
     domAuthor.appendChild(domSpan);
     domUl.appendChild(domDate);
+
+    const contentContainer = document.createElement('div');
+    contentContainer.setAttribute('class', 'content__container');
 
     const domImg = document.createElement('img');
     domImg.setAttribute('src', article.imgUrl);
@@ -382,6 +387,8 @@ function createDetailsArticle(article) {
     divArticle.appendChild(domTitle);
     divArticle.appendChild(domUl);
     divArticle.appendChild(domImg);
+    divArticle.appendChild(contentContainer);
+
 
     const firstParagraph = document.createElement('p');
     firstParagraph.textContent = article.content.substring(0, article.content.length / 2);
@@ -393,9 +400,9 @@ function createDetailsArticle(article) {
     saying.setAttribute('class', 'saying');
     saying.textContent = article.saying;
 
-    divArticle.appendChild(firstParagraph);
-    divArticle.appendChild(saying);
-    divArticle.appendChild(secondParagraph);
+    contentContainer.appendChild(firstParagraph);
+    contentContainer.appendChild(saying);
+    contentContainer.appendChild(secondParagraph);
 
     return domArticle;
 }
