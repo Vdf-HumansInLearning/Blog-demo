@@ -143,7 +143,7 @@ function getArticleList() {
                         createDomArticleList(data.articlesList);
                         totalNumberOfArticles = data.numberOfArticles;
                         updatePrevAndNextButtons();
-                        document.getElementById('loader').style.display = 'none';
+                        closeDomSpinner();
                     });
             }
         )
@@ -412,21 +412,19 @@ function fetchArticleDetails() {
                     function(response) {
                         response.json().then(function(data) {
                             if (data.status !== 404) {
-
                                 let main = document.createElement('main');
                                 main.setAttribute('class', 'main-details');
                                 const articleRendering = createDetailsArticle(data);
                                 main.appendChild(articleRendering);
 
-
                                 const footerRendering = detailsFooter(data.prevId, data.nextId);
                                 main.appendChild(footerRendering);
 
                                 root.appendChild(main);
-                                document.getElementById('loader').style.display = 'none';
-
+                                closeDomSpinner();
                             } else {
                                 location.hash = 'not-found';
+                                location.reload();
                             }
                         })
 
@@ -665,14 +663,14 @@ function locationHashChange() {
     }
     if (hash === '#not-found') {
         page404();
-        document.getElementById('loader').style.display = 'none';
+        closeDomSpinner();
         return;
     }
     if (hash.includes('#article/') && hash.substring(9)) {
         fetchArticleDetails();
         return;
     }
-    document.getElementById('loader').style.display = 'none';
+    closeDomSpinner();
     page404();
 }
 
@@ -686,6 +684,10 @@ function renderArticleListPage() {
 
 function createDomSpinner() {
     document.getElementById('loader').style.display = 'block';
+}
+
+function closeDomSpinner() {
+    document.getElementById('loader').style.display = 'none';
 }
 
 function clearForm() {
@@ -868,9 +870,11 @@ function switchTheme(e) {
     if (e.target.checked) {
         body.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
+        location.reload();
     } else {
         body.setAttribute('data-theme', 'light');
         localStorage.setItem('theme', 'light');
+        location.reload();
     }
 }
 
