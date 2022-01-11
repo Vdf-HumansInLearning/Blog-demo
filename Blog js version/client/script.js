@@ -1,5 +1,6 @@
 const root = document.getElementById('root');
 const static = document.getElementById('static');
+let modalSuccess = document.getElementById('modal-success');
 let articleId = null;
 
 let numberOfArticles = 4;
@@ -43,6 +44,25 @@ function updatePrevAndNextButtons() {
     }
 }
 
+
+let alertNewArticle = document.createElement('div');
+alertNewArticle.setAttribute('class', 'alert alert-success');
+alertNewArticle.setAttribute('role', 'alert');
+alertNewArticle.style.display = 'none';
+alertNewArticle.style.width = 300 + 'px';
+alertNewArticle.style.margin = 0 + 'px auto';
+alertNewArticle.style.textAlign = 'center';
+alertNewArticle.textContent = 'The article has been created!';
+modalSuccess.appendChild(alertNewArticle);
+
+function hideAlertSuccess() {
+    let alert = document.querySelector('.alert-success');
+    alert.style.display = 'block';
+    setTimeout(() => {
+        alert.style.display = 'none';
+    }, 2000);
+}
+
 // CREATING NAV BAR
 const nav = ['Home', 'Travel updates', 'Reviews', 'About', 'Contact'];
 
@@ -73,14 +93,12 @@ function createNav(nav) {
     return navBar;
 }
 
-// renderNavBar(nav);
 function renderNavBar(nav) {
     const domNavBar = createNav(nav);
     static.appendChild(domNavBar);
     createNav(nav);
 
 }
-
 
 // initializing navbar 
 function appInit() {
@@ -90,7 +108,6 @@ function appInit() {
 appInit();
 
 // CREATING THE ADD BUTTON
-
 function createAddButton() {
     const div = document.createElement('div');
     div.setAttribute('class', 'add__container');
@@ -98,7 +115,7 @@ function createAddButton() {
     button.setAttribute('type', 'button');
     button.setAttribute('class', 'button open-modal');
     button.textContent = '+ Add Article';
-    button.addEventListener('click', function () {
+    button.addEventListener('click', function() {
         openModal();
         document.querySelector('.button--pink').style.display = 'block';
         document.querySelector('.button-edit-modal').style.display = 'none';
@@ -117,7 +134,7 @@ function renderAddButton() {
 function getArticleList() {
     fetch(`http://localhost:3007/articles?indexStart=${indexStart}&indexEnd=${indexEnd}`)
         .then(
-            function (response) {
+            function(response) {
                 if (response.status !== 200) {
 
                     console.log('Looks like there was a problem. Status Code: ' +
@@ -126,7 +143,6 @@ function getArticleList() {
                 }
                 response.json()
                     .then(data => {
-                        console.log(data);
                         createDomArticleList(data.articlesList);
                         totalNumberOfArticles = data.numberOfArticles;
                         updatePrevAndNextButtons();
@@ -134,23 +150,14 @@ function getArticleList() {
                     });
             }
         )
-        .catch(function (err) {
+        .catch(function(err) {
             console.log('Fetch Error :-S', err);
         });
 }
-// getData();
-
-
-// show loading spinner
-// fetch data
-// create DOM from data 
-// === render page!
-
 
 // CREATE ALL ARTICLES FROM MAIN PAGE 
 function createArticle(articles) {
     const domArticle = document.createElement('article');
-    console.log(articles)
 
     articles.forEach(element => {
         const articleDiv = document.createElement('div');
@@ -162,25 +169,25 @@ function createArticle(articles) {
         const domUl = document.createElement('ul');
         domUl.setAttribute('class', 'info__container');
 
-        const domList1 = document.createElement('li');
-        domList1.setAttribute('class', 'info__item');
-        domList1.textContent = element.tag;
+        const domTag = document.createElement('li');
+        domTag.setAttribute('class', 'info__item');
+        domTag.textContent = element.tag;
 
-        const domList2 = document.createElement('li');
-        domList2.setAttribute('class', 'info__item');
-        domList2.textContent = 'Added by ';
+        const domAuthor = document.createElement('li');
+        domAuthor.setAttribute('class', 'info__item');
+        domAuthor.textContent = 'Added by ';
 
         const domSpan = document.createElement('span');
         domSpan.setAttribute('class', 'info__mark point');
         domSpan.textContent = element.author;
-        const domList3 = document.createElement('li');
-        domList3.setAttribute('class', 'info__item');
-        domList3.textContent = element.date;
+        const domDate = document.createElement('li');
+        domDate.setAttribute('class', 'info__item');
+        domDate.textContent = element.date;
 
-        domUl.appendChild(domList1);
-        domUl.appendChild(domList2);
-        domList2.appendChild(domSpan);
-        domUl.appendChild(domList3);
+        domUl.appendChild(domTag);
+        domUl.appendChild(domAuthor);
+        domAuthor.appendChild(domSpan);
+        domUl.appendChild(domDate);
 
         const domImg = document.createElement('img');
         domImg.setAttribute('src', element.imgUrl);
@@ -194,7 +201,7 @@ function createArticle(articles) {
         editButton.setAttribute('class', 'actions__btn border');
         editButton.setAttribute('id', element.id);
         editButton.textContent = 'Edit'
-        editButton.addEventListener('click', function () {
+        editButton.addEventListener('click', function() {
             openModal()
             editArticle(element);
             document.querySelector('.button-edit-modal').style.display = 'block';
@@ -211,16 +218,6 @@ function createArticle(articles) {
         deleteButton.addEventListener('click', () => {
             articleId = element.id;
             openModalAlert();
-
-            // let btnDeleteAlert = document.querySelector('.deleteAlertBtn');
-            // btnDeleteAlert.addEventListener('click', (e) => {
-            //     console.log(e);
-
-            //     // if (e.target === btnDeleteAlert) {
-            //     deleteArticle(element.id);
-            //     hideModalAlert();
-            //     // }
-            // })
         });
 
         domActionDiv.appendChild(editButton);
@@ -245,7 +242,7 @@ function createArticle(articles) {
         readMoreButton.setAttribute('class', 'button button-details');
         readMoreAnchor.setAttribute('href', '#article/' + element.id);
         readMoreButton.textContent = 'Read More';
-        readMoreButton.addEventListener('click', function () {
+        readMoreButton.addEventListener('click', function() {
             location.hash = '#article/' + element.id;
             location.reload();
         })
@@ -270,8 +267,6 @@ function createArticle(articles) {
 // RENDERING ALL ARTICLES FROM MAIN PAGE
 function createDomArticleList(articles) {
     clearRoot();
-    // move rendernav in appInit and addbutton in an articleListInit functions
-
     const domArticle = createArticle(articles);
     root.appendChild(domArticle);
     createArticle(articles);
@@ -288,7 +283,7 @@ function createFooter() {
     previousButton.setAttribute('id', 'button-prev')
     previousButton.textContent = 'previous';
 
-    previousButton.addEventListener('click', function () {
+    previousButton.addEventListener('click', function() {
         updateStartEndIndexes('previous');
         getArticleList();
     });
@@ -327,7 +322,7 @@ function detailsFooter(prevId, nextId) {
         prevBtn.setAttribute('class', 'footer__link');
         prevBtn.textContent = 'prev';
 
-        prevBtn.addEventListener('click', function () {
+        prevBtn.addEventListener('click', function() {
             location.hash = `#article/${prevId}`;
             location.reload();
         })
@@ -339,7 +334,7 @@ function detailsFooter(prevId, nextId) {
         nextBtn.setAttribute('class', 'footer__link footer__link--next');
         nextBtn.textContent = 'next';
 
-        nextBtn.addEventListener('click', function () {
+        nextBtn.addEventListener('click', function() {
             location.hash = `#article/${nextId}`;
             location.reload();
         })
@@ -348,7 +343,6 @@ function detailsFooter(prevId, nextId) {
     }
     return footer;
 }
-
 
 function createDetailsArticle(article) {
     const domArticle = document.createElement('article');
@@ -363,26 +357,26 @@ function createDetailsArticle(article) {
     const domUl = document.createElement('ul');
     domUl.setAttribute('class', 'info__container');
 
-    const domList1 = document.createElement('li');
-    domList1.setAttribute('class', 'info__item');
-    domList1.textContent = article.tag;
+    const domTag = document.createElement('li');
+    domTag.setAttribute('class', 'info__item');
+    domTag.textContent = article.tag;
 
-    const domList2 = document.createElement('li');
-    domList2.setAttribute('class', 'info__item');
-    domList2.textContent = 'Added by ';
+    const domAuthor = document.createElement('li');
+    domAuthor.setAttribute('class', 'info__item');
+    domAuthor.textContent = 'Added by ';
 
     const domSpan = document.createElement('span');
     domSpan.setAttribute('class', 'info__mark point');
     domSpan.textContent = article.author;
 
-    const domList3 = document.createElement('li');
-    domList3.setAttribute('class', 'info__item');
-    domList3.textContent = article.date;
+    const domDate = document.createElement('li');
+    domDate.setAttribute('class', 'info__item');
+    domDate.textContent = article.date;
 
-    domUl.appendChild(domList1);
-    domUl.appendChild(domList2);
-    domList2.appendChild(domSpan);
-    domUl.appendChild(domList3);
+    domUl.appendChild(domTag);
+    domUl.appendChild(domAuthor);
+    domAuthor.appendChild(domSpan);
+    domUl.appendChild(domDate);
 
     const domImg = document.createElement('img');
     domImg.setAttribute('src', article.imgUrl);
@@ -412,17 +406,14 @@ function createDetailsArticle(article) {
 // CREATING ONE DETAILED ARTICLE
 function fetchArticleDetails() {
     let currLocation = window.location.hash;
-    console.log(currLocation);
     if (currLocation.startsWith('#article')) {
         const articleId = location.hash.substring(9);
 
         if (articleId) {
             fetch(`http://localhost:3007/articles/${articleId}`)
                 .then(
-                    function (response) {
-
-                        // Examine the text in the response
-                        response.json().then(function (data) {
+                    function(response) {
+                        response.json().then(function(data) {
                             if (data.status !== 404) {
 
                                 let main = document.createElement('main');
@@ -443,41 +434,12 @@ function fetchArticleDetails() {
                         })
 
                     })
-                .catch(function (err) {
+                .catch(function(err) {
                     console.log('Fetch Error :-S', err);
                 });
         }
     }
 
-}
-
-function page404() {
-    let errorDiv = document.createElement('div');
-    errorDiv.setAttribute('class', 'error-box');
-    errorDiv.setAttribute('id', 'error-box');
-
-    let errorInfoDiv = document.createElement('div');
-    errorInfoDiv.setAttribute('class', 'error-info');
-
-    let errorParagraph = document.createElement('h1');
-    errorParagraph.setAttribute('class', 'error-message');
-    errorParagraph.textContent = 'Error 404 - Article not found!'
-
-    let goToHomepageButton = document.createElement('button');
-    goToHomepageButton.setAttribute('type', 'button');
-    goToHomepageButton.setAttribute('class', 'to-homepage');
-    goToHomepageButton.textContent = 'BACK TO HOMEPAGE';
-    goToHomepageButton.addEventListener('click', function () {
-        location.hash = '';
-        location.reload();
-    })
-
-    root.style.margin = 0;
-
-    errorDiv.appendChild(errorInfoDiv);
-    errorInfoDiv.appendChild(errorParagraph);
-    errorInfoDiv.appendChild(goToHomepageButton);
-    root.appendChild(errorDiv);
 }
 
 // CREATE MODAL
@@ -497,41 +459,53 @@ function createModal() {
     const inputsContainer = document.createElement('div');
     inputsContainer.setAttribute('class', 'inputs__container');
 
-    const input1 = document.createElement('input');
-    input1.setAttribute('type', 'text');
-    input1.setAttribute('class', 'input margin');
-    input1.setAttribute('id', 'title')
-    input1.setAttribute('placeholder', 'Please enter title');
+    const errorMessage = document.createElement('div');
+    errorMessage.setAttribute('id', 'error-modal');
 
-    const input2 = document.createElement('input');
-    input2.setAttribute('type', 'text');
-    input2.setAttribute('class', 'input');
-    input2.setAttribute('id', 'tag')
-    input2.setAttribute('placeholder', 'Please enter tag');
+    const title = document.createElement('input');
+    title.setAttribute('type', 'text');
+    title.setAttribute('class', 'input margin');
+    title.setAttribute('id', 'title')
+    title.setAttribute('placeholder', 'Please enter title');
 
-    const input3 = document.createElement('input');
-    input3.setAttribute('type', 'text');
-    input3.setAttribute('class', 'input margin');
-    input3.setAttribute('id', 'author')
-    input3.setAttribute('placeholder', 'Please enter author');
+    const invalidTitle = document.createElement("p");
+    invalidTitle.setAttribute("id", "invalid-title");
+    invalidTitle.setAttribute("class", "invalid-feedback");
+    invalidTitle.textContent = "Title should contain only letters";
+    title.appendChild(invalidTitle);
 
-    const input4 = document.createElement('input');
-    input4.setAttribute('type', 'text');
-    input4.setAttribute('class', 'input');
-    input4.setAttribute('id', 'date')
-    input4.setAttribute('placeholder', 'Please enter date');
+    const tag = document.createElement('input');
+    tag.setAttribute('type', 'text');
+    tag.setAttribute('class', 'input');
+    tag.setAttribute('id', 'tag')
+    tag.setAttribute('placeholder', 'Please enter tag');
 
-    const input5 = document.createElement('input');
-    input5.setAttribute('type', 'text');
-    input5.setAttribute('class', 'input margin');
-    input5.setAttribute('id', 'url')
-    input5.setAttribute('placeholder', 'Please enter image url');
+    const author = document.createElement('input');
+    author.setAttribute('type', 'text');
+    author.setAttribute('class', 'input margin');
+    author.setAttribute('id', 'author')
+    author.setAttribute('placeholder', 'Please enter author');
 
-    const input6 = document.createElement('input');
-    input6.setAttribute('type', 'text');
-    input6.setAttribute('class', 'input');
-    input6.setAttribute('id', 'saying')
-    input6.setAttribute('placeholder', 'Please enter saying');
+    const date = document.createElement('input');
+    const today = new Date();
+    date.setAttribute('type', 'text');
+    date.setAttribute('class', 'input');
+    date.setAttribute('id', 'date')
+    date.setAttribute('placeholder', `${today.toLocaleString('default', { month: 'long' })} ${today.getDate()}, ${today.getFullYear()}`);
+
+    date.disabled = true;
+
+    const image = document.createElement('input');
+    image.setAttribute('type', 'text');
+    image.setAttribute('class', 'input margin');
+    image.setAttribute('id', 'url')
+    image.setAttribute('placeholder', 'Please enter image url');
+
+    const saying = document.createElement('input');
+    saying.setAttribute('type', 'text');
+    saying.setAttribute('class', 'input');
+    saying.setAttribute('id', 'saying')
+    saying.setAttribute('placeholder', 'Please enter saying');
 
     const textarea = document.createElement('textarea');
     textarea.setAttribute('class', 'textarea');
@@ -553,8 +527,15 @@ function createModal() {
     saveModalButton.setAttribute('type', 'button');
     saveModalButton.setAttribute('class', 'button button--pink');
     saveModalButton.textContent = 'Save';
-    saveModalButton.addEventListener('click', function () {
-        createNewArticle();
+    saveModalButton.addEventListener('click', function() {
+
+        let isValid = validateModal();
+        if (isValid) {
+            hideAlertSuccess();
+            createNewArticle();
+            errorMessage.innerHTML = '';
+        }
+
     })
 
     const editModalButton = document.createElement('button');
@@ -563,14 +544,17 @@ function createModal() {
     editModalButton.textContent = 'Edit';
 
     modalDiv.appendChild(modalContent);
+    modalDiv.appendChild(errorMessage);
+
     modalContent.appendChild(modalTitle);
     modalContent.appendChild(inputsContainer);
-    inputsContainer.appendChild(input1);
-    inputsContainer.appendChild(input2);
-    inputsContainer.appendChild(input3);
-    inputsContainer.appendChild(input4);
-    inputsContainer.appendChild(input5);
-    inputsContainer.appendChild(input6);
+
+    inputsContainer.appendChild(title);
+    inputsContainer.appendChild(tag);
+    inputsContainer.appendChild(author);
+    inputsContainer.appendChild(date);
+    inputsContainer.appendChild(image);
+    inputsContainer.appendChild(saying);
     modalContent.appendChild(textarea);
     modalContent.appendChild(modalButtonsDiv);
     modalButtonsDiv.appendChild(closeModalButton);
@@ -668,25 +652,23 @@ function editArticle(article) {
     textarea.value = article.content;
 
     let saveModalButton = document.querySelector('.button-edit-modal');
-    saveModalButton.addEventListener('click', function () {
+    saveModalButton.addEventListener('click', function() {
         updateArticle(article.id);
         window.reload();
 
     })
 }
-console.log(location.hash.substring(9))
 // CREATE HASH ROUTE
 function locationHashChange() {
     const hash = location.hash;
 
     if (hash === '') {
-        // renderArticle(articles);
         renderArticleListPage()
         return;
     }
-    if (hash === 'not-found') {
-        document.getElementById('loader').style.display = 'none';
+    if (hash === '#not-found') {
         page404();
+        document.getElementById('loader').style.display = 'none';
         return;
     }
     if (hash.includes('#article/') && hash.substring(9)) {
@@ -695,10 +677,6 @@ function locationHashChange() {
     }
     document.getElementById('loader').style.display = 'none';
     page404();
-    // hash === '' renderArticle()
-    // hash.includes('article) si dupa article este '/' plus string => fetchArticleDetails()
-    // hash.includes('not-found'), render page404()
-    // daca nu exista ruta de mai sus, page404()
 }
 
 window.onhashchange = locationHashChange();
@@ -707,7 +685,6 @@ function renderArticleListPage() {
     createDomSpinner();
     articleListInit();
     getArticleList();
-
 }
 
 function createDomSpinner() {
@@ -746,20 +723,23 @@ function openModal() {
 closeModal.addEventListener('click', hideModal)
 
 function hideModal() {
+    let error = document.getElementById('error-modal');
+
     modalOverlay.style.visibility = 'hidden';
     modalOverlay.style.opacity = 0;
+    error.innerHTML = '';
     clearForm();
 }
 
 // GETTING THE ELEMENTS TO CLOSE THE MODAL ALERT
 let modalOverlayAlert = document.querySelector('.modal__overlay__alert');
 let closeModalAlert = document.querySelector('.cancelAlertBtn');
+
 // OPEN MODAL ALERT FUNCTION, called directly in the function that creates the ADD BUTTON
 function openModalAlert() {
     document.getElementById('id01').style.display = 'block';
     modalOverlayAlert.style.visibility = 'visible';
     modalOverlayAlert.style.opacity = 1;
-
 }
 
 // add event listener for the delete button from modal
@@ -771,14 +751,12 @@ btnDeleteAlert.addEventListener('click', (e) => {
 
 })
 
-
 // CLOSING THE MODAL ALERT
 closeModalAlert.addEventListener('click', function(e) {
     hideModalAlert();
 });
 
 function hideModalAlert() {
-    console.log('hidden alert')
     modalOverlayAlert.style.visibility = 'hidden';
     modalOverlayAlert.style.opacity = 0;
 }
@@ -788,7 +766,6 @@ function deleteArticle() {
     if (!articleId) {
         return;
     }
-    console.log('aa', articleId)
     fetch('http://localhost:3007/articles/' + articleId, {
             method: 'DELETE',
         })
@@ -801,14 +778,12 @@ function deleteArticle() {
             }
             getArticleList();
 
-
         })
         .catch((error) => {
             articleId = null;
             console.error('Error:', error);
         });
 }
-
 
 // CREATING NEW ARTICLE, UPDATING THE ARTICLE LIST
 function createNewArticle() {
@@ -819,42 +794,35 @@ function createNewArticle() {
     let imgUrl = document.getElementById('url').value;
     let saying = document.getElementById('saying').value;
     let textarea = document.getElementById('textarea').value;
+    let today = new Date();
 
-    if (title && tag && author && date && imgUrl && saying && textarea) {
+    fetch('http://localhost:3007/articles', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
 
-
-        fetch('http://localhost:3007/articles', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-
-            body: JSON.stringify({
-                'title': title,
-                'imgUrl': imgUrl,
-                'imgAlt': 'photo',
-                'content': textarea,
-                'tag': tag,
-                'author': author,
-                'date': date,
-                'saying': saying,
-            })
-
-        }).then(res => res.json())
-
-        .then(data => {
-            hideModal();
-            clearForm();
-            alert(`A new article with title ${title} was created! Click OK!`)
-            getArticleList();
-
+        body: JSON.stringify({
+            'title': title,
+            'imgUrl': imgUrl,
+            'imgAlt': 'photo',
+            'content': textarea,
+            'tag': tag,
+            'author': author,
+            'date': `${today.toLocaleString('default', { month: 'long' })} ${today.getDate()}, ${today.getFullYear()}`,
+            'saying': saying,
         })
 
+    }).then(res => res.json())
 
-        .catch((err) => console.log(err));
-    } else {
-        alert('Please complete all fields!')
-    }
+    .then(data => {
+        hideModal();
+        clearForm();
+        // alert(`A new article with title ${title} was created! Click OK!`)
+        getArticleList();
+    })
+
+    .catch((err) => console.log(err));
 }
 
 // EDITING ARTICLE
@@ -877,12 +845,12 @@ function updateArticle(id) {
         content: textarea,
     }
     fetch('http://localhost:3007/articles/' + id, {
-        method: 'PUT',
-        headers: {
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify(putObject),
-    })
+            method: 'PUT',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(putObject),
+        })
         .then(response => response.json())
         .then((data) => {
             hideModal();
@@ -903,15 +871,12 @@ let error = document.getElementById('error-box');
 function switchTheme(e) {
     if (e.target.checked) {
         body.setAttribute('data-theme', 'dark');
-        error.style.backgroundImage = "url('/Blog\ js\ version/client/img/Valley-dark.jpg')";
         localStorage.setItem('theme', 'dark');
     } else {
         body.setAttribute('data-theme', 'light');
-        error.style.backgroundImage = "url('/Blog\ js\ version/client/img/Valley-light.jpg')";
         localStorage.setItem('theme', 'light');
     }
 }
-
 
 
 toggleSwitch.addEventListener('change', switchTheme, false);
@@ -924,4 +889,108 @@ if (currentTheme) {
     if (currentTheme === 'dark') {
         toggleSwitch.checked = true;
     }
+}
+
+
+function page404() {
+    let errorDiv = document.createElement('div');
+    errorDiv.setAttribute('class', 'error-box');
+    errorDiv.setAttribute('id', 'error-box');
+
+    if (localStorage.getItem('theme') === 'light') {
+        errorDiv.style.backgroundImage = "url('/client/img/Valley-light.jpg')";
+
+    } else if (localStorage.getItem('theme') === 'dark') {
+        errorDiv.style.backgroundImage = "url('/client/img/Valley-dark.jpg')";
+    }
+
+    let errorInfoDiv = document.createElement('div');
+    errorInfoDiv.setAttribute('class', 'error-info');
+
+    let errorParagraph = document.createElement('h1');
+    errorParagraph.setAttribute('class', 'error-message');
+    errorParagraph.textContent = 'Error 404 - Article not found!'
+
+    let goToHomepageButton = document.createElement('button');
+    goToHomepageButton.setAttribute('type', 'button');
+    goToHomepageButton.setAttribute('class', 'to-homepage');
+    goToHomepageButton.textContent = 'BACK TO HOMEPAGE';
+    goToHomepageButton.addEventListener('click', function() {
+        location.hash = '';
+        location.reload();
+    })
+
+    root.style.margin = 0;
+
+    errorDiv.appendChild(errorInfoDiv);
+    errorInfoDiv.appendChild(errorParagraph);
+    errorInfoDiv.appendChild(goToHomepageButton);
+    root.appendChild(errorDiv);
+}
+
+
+
+function validateModal() {
+    let regexJpg = /\.(jpe?g|png|gif|bmp)$/i;
+    let upperCaseLetter = /^[A-Z]+[a-zA-Z]*$/;
+
+    let isValid = true;
+    let errors = [];
+
+    let title = document.getElementById('title');
+    let tag = document.getElementById('tag');
+    let author = document.getElementById('author');
+    let imgUrl = document.getElementById('url');
+    let saying = document.getElementById('saying');
+    let textarea = document.getElementById('textarea');
+
+    let error = document.getElementById('error-modal');
+
+    if (!title.value) {
+        isValid = false;
+        errors.push('Please insert the title of your article!');
+    }
+
+    if (title.value.length < 5) {
+        isValid = false;
+        errors.push('The title must be at least 5 characters long!')
+    }
+
+    if (!tag.value) {
+        isValid = false;
+        errors.push('Please insert the tag of your article!');
+    }
+    if (!author.value) {
+        isValid = false;
+        errors.push('Please insert the author of your article!');
+    }
+    if (!upperCaseLetter.test(author.value)) {
+        isValid = false;
+        errors.push('The first letter must be uppercase and you must use only letters!')
+    }
+
+    if (!imgUrl.value) {
+        isValid = false;
+        errors.push('Please insert an image url!');
+    }
+
+    if (!regexJpg.test(imgUrl.value)) {
+        isValid = false;
+        errors.push('Please insert an image with jpg/jpeg/png/bmp/gif extension!')
+    }
+
+    if (!saying.value) {
+        isValid = false;
+        errors.push('Please insert the main saying of your article!');
+    }
+    if (!textarea.value) {
+        isValid = false;
+        errors.push('Please insert the content of your article!');
+    }
+
+    if (errors.length > 0) {
+        error.innerText = errors[0]
+    }
+
+    return isValid;
 }
