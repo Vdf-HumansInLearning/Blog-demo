@@ -27,7 +27,6 @@ app.get("/articles/:id", (req, res) => {
             const prevId = i === 0 ? null : articlesList[i - 1].id;
 
             article = {...articlesList[i], prevId, nextId };
-            console.log(article);
         }
     }
 
@@ -70,8 +69,7 @@ app.get("/articles", (req, res) => {
 
     let indexStart = req.query.indexStart;
     let indexEnd = req.query.indexEnd;
-    console.log(articlesList);
-    console.log(req);
+
     if (indexStart === undefined || indexEnd === undefined) {
         let articlesListObject = {
             articles: articlesList,

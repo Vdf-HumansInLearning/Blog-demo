@@ -16,13 +16,11 @@ function updateStartEndIndexes(button) {
     if (button === 'next') {
         indexStart = indexStart + numberOfArticles;
         indexEnd = indexEnd + numberOfArticles;
-        console.log(indexStart, indexEnd);
     }
 
     if (button === 'previous') {
         indexStart = indexStart - numberOfArticles;
         indexEnd = indexEnd - numberOfArticles;
-        console.log(indexStart, indexEnd);
     }
 }
 
@@ -136,7 +134,6 @@ function getArticleList() {
         .then(
             function(response) {
                 if (response.status !== 200) {
-
                     console.log('Looks like there was a problem. Status Code: ' +
                         response.status);
                     return;
@@ -790,7 +787,6 @@ function createNewArticle() {
     let title = document.getElementById('title').value;
     let tag = document.getElementById('tag').value;
     let author = document.getElementById('author').value;
-    let date = document.getElementById('date').value;
     let imgUrl = document.getElementById('url').value;
     let saying = document.getElementById('saying').value;
     let textarea = document.getElementById('textarea').value;
