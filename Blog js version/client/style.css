@@ -84,7 +84,7 @@ button.button {
     font-family: 'Montserrat', sans-serif;
     letter-spacing: 1px;
     line-height: 18px;
-    background-color: white;
+    background-color: var(--bg-color);
     cursor: pointer;
 }
 
@@ -155,12 +155,21 @@ img {
     margin-bottom: 80px;
 }
 
+.content__container {
+
+    margin-top: 80px;
+    margin-bottom: 140px;
+    padding-left: 10%;
+    padding-right: 10%;
+}
+
 p {
-    margin: 0px 280px 140px 280px;
+    /* margin: 0px 280px 140px 280px; */
     line-height: 30px;
     color: var(--font-color);
     font-family: 'Cardo', serif;
     text-align: justify;
+
 }
 
 p.line-height {
@@ -172,10 +181,6 @@ p.line-height {
     margin-bottom: 100px;
 }
 
-
-/* p {
-    text-align: justify;
-} */
 
 button.footer__link {
     border: none;
@@ -234,6 +239,7 @@ footer.footer {
 }
 
 h2.title.modal-title {
+    font-family: 'Montserrat-Regular';
     margin-top: 50px;
     margin-bottom: 50px;
 }
@@ -242,15 +248,19 @@ h2.title.modal-title {
     display: flex;
     flex-wrap: wrap;
     margin: 0px 75px;
+    font-size: 18px;
 }
 
 input.input {
+    font-family: 'Cardo-Regular';
     width: 400px;
     height: 35px;
     margin-bottom: 25px;
     padding-left: 10px;
     border: 1px solid var(--primary-color-font);
     border-radius: 5px;
+    background-color: var(--bg-color);
+    color: var(--font-color);
 }
 
 input.input.margin {
@@ -262,11 +272,13 @@ textarea.textarea {
     font-size: 18px;
     line-height: 25px;
     padding-left: 10px;
-    color: var(--light-grey);
+    color: var(--font-color);
     border: 1px solid var(--primary-color-font);
     border-radius: 5px;
     font-family: 'Cardo', serif;
     margin: 0px 75px;
+    background-color: var(--bg-color);
+
 }
 
 .modal__buttons {
@@ -276,8 +288,8 @@ textarea.textarea {
     justify-content: space-around;
 }
 
-.close-modal{
-    color: var(--grey)!important;
+.close-modal {
+    color: var(--font-color) !important;
 }
 
 button.button.button--pink {
@@ -425,6 +437,7 @@ button.to-homepage {
     0% {
         -webkit-transform: rotate(0deg);
     }
+
     100% {
         -webkit-transform: rotate(360deg);
     }
@@ -434,6 +447,7 @@ button.to-homepage {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
@@ -455,6 +469,7 @@ button.to-homepage {
         bottom: -100px;
         opacity: 0
     }
+
     to {
         bottom: 0px;
         opacity: 1
@@ -466,6 +481,7 @@ button.to-homepage {
         bottom: -100px;
         opacity: 0
     }
+
     to {
         bottom: 0;
         opacity: 1
@@ -585,6 +601,7 @@ hr {
 }
 
 @media screen and (max-width: 300px) {
+
     .cancelAlertBtn,
     .deleteAlertBtn {
         width: 100%;
@@ -601,4 +618,17 @@ div#error-modal {
 
 input#date {
     background: #e6e6e6;
+}
+
+.fas {
+    font-weight: 500;
+}
+
+.fa-plus::before {
+    font-size: 28px !important;
+    font-weight: 900;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    position: relative;
+    top: 4px;
 }
