@@ -5,23 +5,23 @@
 :root {
     --font-color: #1E1E1E;
     --primary-color-font: #9B9B9B;
-    --bg-color: #fff;
     --secondary-color-font: #000;
+    --bg-color: #FFF;
     --pink: #FFE3E3;
-    --black-white: #fff;
+    --black-white: #FFF;
     --moon: #9B9B9B;
-    --sun: #fff;
+    --sun: #FFF;
 }
 
 [data-theme="dark"] {
-    --font-color: #cbcbd4;
+    --font-color: #CBCBD4;
     --primary-color-font: #818181;
-    --secondary-color-font: #818cab;
-    --bg-color: #1a1a1f;
-    --pink: #494e5c;
-    --black-white: #1a1a1f;
-    --moon: #1a1a1f;
-    --sun: #9b9b9b;
+    --secondary-color-font: #818CAB;
+    --bg-color: #1A1A1F;
+    --pink: #494E5C;
+    --black-white: #1A1A1F;
+    --moon: #1A1A1F;
+    --sun: #9B9B9B;
 }
 
 body {
@@ -59,11 +59,12 @@ li.nav__item {
 }
 
 a.nav__link {
-    color: var(--primary-color-font);
+    color: var(--font-color);
     text-decoration: none;
     text-transform: uppercase;
     font-size: 11px;
     font-family: 'Montserrat', sans-serif;
+    letter-spacing: 5px;
 }
 
 .add__container {
@@ -76,13 +77,13 @@ a.nav__link {
 button.button {
     width: 300px;
     border-radius: 50px;
-    border: 1px solid var(--primary-color-font);
+    border: 2px solid var(--primary-color-font);
     height: 60px;
     font-size: 14px;
     text-transform: uppercase;
     color: var(--font-color);
     font-family: 'Montserrat', sans-serif;
-    letter-spacing: 1px;
+    letter-spacing: 5px;
     line-height: 18px;
     background-color: var(--bg-color);
     cursor: pointer;
@@ -136,11 +137,11 @@ span.info__mark {
     border: none;
     font-family: 'Montserrat', sans-serif;
     background-color: var(--bg-color);
-    letter-spacing: 4px;
+    letter-spacing: 5px;
     line-height: 18px;
     margin-left: 6px;
     padding: 0px;
-    color: var(--primary-color-font);
+    color: var(--font-color);
     cursor: pointer;
 }
 
@@ -153,6 +154,8 @@ span.info__mark {
 img {
     height: 720px;
     margin-bottom: 80px;
+    color: var(--font-color);
+
 }
 
 .content__container {
@@ -164,7 +167,6 @@ img {
 }
 
 p {
-    /* margin: 0px 280px 140px 280px; */
     line-height: 30px;
     color: var(--font-color);
     font-family: 'Cardo', serif;
@@ -212,6 +214,7 @@ footer.footer {
     font-family: 'Montserrat', sans-serif;
 }
 
+/* add article modal */
 .modal__overlay {
     overflow: hidden;
     position: fixed;
@@ -232,9 +235,9 @@ footer.footer {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: var(--bg-color);
-    width: 1002px;
+    width: 1000px;
     height: 750px;
-    border: 1px solid var(--primary-color-font);
+    outline: 1px solid var(--primary-color-font);
     box-shadow: 0px 0px 26px 6px;
 }
 
@@ -345,7 +348,7 @@ p.saying {
     height: 34px;
     position: relative;
     width: 60px;
-    margin-right: 75px;
+    margin-right: 25px;
 }
 
 .theme-switch input {
@@ -626,7 +629,6 @@ input#date {
 
 .fa-plus::before {
     font-size: 28px !important;
-    font-weight: 900;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     position: relative;

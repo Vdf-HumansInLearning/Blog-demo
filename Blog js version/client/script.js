@@ -61,8 +61,40 @@ function hideAlertSuccess() {
     }, 2000);
 }
 
+function createThemeButton() {
+    let themeBox = document.createElement('div');
+    themeBox.setAttribute('class', 'theme-switch-box');
+
+    let themeLabel = document.createElement('label');
+    themeLabel.setAttribute('class', 'theme-switch');
+    themeLabel.setAttribute('for', 'switch');
+
+    let themeInput = document.createElement('input');
+    themeInput.setAttribute('type', 'checkbox');
+    themeInput.setAttribute('id', 'switch');
+
+    let themeIcons = document.createElement('div');
+    themeIcons.setAttribute('class', 'icons');
+
+    let themeMoon = document.createElement('div');
+    themeMoon.setAttribute('class' , 'far fa-moon round');
+    let themeSun = document.createElement('div');
+    themeSun.setAttribute('class' , 'fas fa-sun round');
+
+    static.appendChild(themeBox);
+    themeBox.appendChild(themeLabel);
+    themeLabel.appendChild(themeInput);
+    themeLabel.appendChild(themeIcons);
+    themeIcons.appendChild(themeMoon);
+    themeIcons.appendChild(themeSun);
+
+
+}
+
+createThemeButton();
+
 // CREATING NAV BAR
-const nav = ['Home', 'Travel updates', 'Reviews', 'About', 'Contact'];
+const nav = ['Home','Reviews', 'About', 'Contact'];
 
 function createNav(nav) {
     const navBar = document.createElement('nav');
@@ -318,7 +350,7 @@ function detailsFooter(prevId, nextId) {
     if (prevId) {
         let prevBtn = document.createElement('button');
         prevBtn.setAttribute('class', 'footer__link');
-        prevBtn.textContent = 'prev';
+        prevBtn.textContent = 'previous article';
 
         prevBtn.addEventListener('click', function() {
             location.hash = `#/article/${prevId}`;
@@ -329,7 +361,7 @@ function detailsFooter(prevId, nextId) {
         let prevDiv = document.createElement('div');
         let nextBtn = document.createElement('button');
         nextBtn.setAttribute('class', 'footer__link footer__link--next');
-        nextBtn.textContent = 'next';
+        nextBtn.textContent = 'next article';
 
         nextBtn.addEventListener('click', function() {
             location.hash = `#/article/${nextId}`;
@@ -604,7 +636,7 @@ function createModalAlert() {
 
     const cancelAlertBtn = document.createElement('button');
     cancelAlertBtn.setAttribute('type', 'button');
-    cancelAlertBtn.setAttribute('class', 'cancelAlertBtn');
+    cancelAlertBtn.setAttribute('class', 'button cancelAlertBtn');
     cancelAlertBtn.textContent = 'Cancel';
     cancelAlertBtn.addEventListener('click', hideModalAlert);
 
