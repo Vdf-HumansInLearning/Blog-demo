@@ -140,6 +140,8 @@ function getArticleList() {
                 }
                 response.json()
                     .then(data => {
+                        clearRoot();
+
                         createDomArticleList(data.articlesList);
                         totalNumberOfArticles = data.numberOfArticles;
                         updatePrevAndNextButtons();
@@ -232,16 +234,15 @@ function createArticle(articles) {
 
         const readMoreAnchor = document.createElement('a');
         readMoreAnchor.setAttribute('class', 'btn-details');
-        readMoreAnchor.setAttribute('href', '#article/' + element.id);
+        readMoreAnchor.setAttribute('href', '#/article/' + element.id);
 
         const readMoreButton = document.createElement('button');
         readMoreButton.setAttribute('type', 'button');
         readMoreButton.setAttribute('class', 'button button-details');
-        readMoreAnchor.setAttribute('href', '#article/' + element.id);
+        readMoreAnchor.setAttribute('href', '#/article/' + element.id);
         readMoreButton.textContent = 'Read More';
         readMoreButton.addEventListener('click', function() {
-            location.hash = '#article/' + element.id;
-            location.reload();
+            location.hash = '#/article/' + element.id;
         })
 
 
@@ -320,8 +321,7 @@ function detailsFooter(prevId, nextId) {
         prevBtn.textContent = 'prev';
 
         prevBtn.addEventListener('click', function() {
-            location.hash = `#article/${prevId}`;
-            location.reload();
+            location.hash = `#/article/${prevId}`;
         })
         footer.appendChild(prevBtn);
     }
@@ -332,8 +332,7 @@ function detailsFooter(prevId, nextId) {
         nextBtn.textContent = 'next';
 
         nextBtn.addEventListener('click', function() {
-            location.hash = `#article/${nextId}`;
-            location.reload();
+            location.hash = `#/article/${nextId}`;
         })
         footer.appendChild(prevDiv);
         footer.appendChild(nextBtn);
@@ -370,7 +369,7 @@ function createDetailsArticle(article) {
     domDate.setAttribute('class', 'info__item');
     domDate.textContent = article.date;
 
-    
+
 
     domUl.appendChild(domTag);
     domUl.appendChild(domAuthor);
@@ -410,8 +409,8 @@ function createDetailsArticle(article) {
 // CREATING ONE DETAILED ARTICLE
 function fetchArticleDetails() {
     let currLocation = window.location.hash;
-    if (currLocation.startsWith('#article')) {
-        const articleId = location.hash.substring(9);
+    if (currLocation.startsWith('#/article')) {
+        const articleId = location.hash.substring(10);
 
         if (articleId) {
             fetch(`http://localhost:3007/articles/${articleId}`)
@@ -419,6 +418,8 @@ function fetchArticleDetails() {
                     function(response) {
                         response.json().then(function(data) {
                             if (data.status !== 404) {
+                                clearRoot();
+
                                 let main = document.createElement('main');
                                 main.setAttribute('class', 'main-details');
                                 const articleRendering = createDetailsArticle(data);
@@ -635,6 +636,11 @@ function clearRoot() {
     root.innerHTML = '';
 }
 
+function clearStatic() {
+    static.innerHTML = '';
+}
+
+
 // EDIT ARTICLE FUNCTION
 function editArticle(article) {
     let title = document.getElementById('title');
@@ -656,24 +662,35 @@ function editArticle(article) {
     let saveModalButton = document.querySelector('.button-edit-modal');
     saveModalButton.addEventListener('click', function() {
         updateArticle(article.id);
-        window.reload();
-
     })
 }
 // CREATE HASH ROUTE
+
+window.onload = () => {
+    const initialHash = window.location.hash;
+
+    if (initialHash === '') {
+        window.location.hash = '#/';
+    } else {
+        locationHashChange();
+    }
+};
+
+
+
 function locationHashChange() {
     const hash = location.hash;
 
-    if (hash === '') {
+    if (hash === '#/') {
         renderArticleListPage()
         return;
     }
-    if (hash === '#not-found') {
+    if (hash === '#/not-found') {
         page404();
         closeDomSpinner();
         return;
     }
-    if (hash.includes('#article/') && hash.substring(9)) {
+    if (hash.includes('#/article/') && hash.substring(10)) {
         fetchArticleDetails();
         return;
     }
@@ -681,7 +698,7 @@ function locationHashChange() {
     page404();
 }
 
-window.onhashchange = locationHashChange();
+window.addEventListener('hashchange', locationHashChange, false);
 
 function renderArticleListPage() {
     createDomSpinner();
@@ -823,7 +840,6 @@ function createNewArticle() {
     .then(data => {
         hideModal();
         clearForm();
-        // alert(`A new article with title ${title} was created! Click OK!`)
         getArticleList();
     })
 
@@ -877,12 +893,25 @@ function switchTheme(e) {
     if (e.target.checked) {
         body.setAttribute('data-theme', 'dark');
         localStorage.setItem('theme', 'dark');
-        location.reload();
+        changeImageNotFound('dark');
+
     } else {
         body.setAttribute('data-theme', 'light');
         localStorage.setItem('theme', 'light');
-        location.reload();
+        changeImageNotFound('light');
     }
+}
+
+function changeImageNotFound(theme) {
+    let img = document.getElementById('error-box');
+    if (img) {
+        if (theme === 'dark') {
+            img.style.backgroundImage = 'url("/client/img/Valley-dark.jpg")';
+        } else {
+            img.style.backgroundImage = 'url("/client/img/Valley-light.jpg")';
+        }
+    }
+
 }
 
 
@@ -900,13 +929,17 @@ if (currentTheme) {
 
 
 function page404() {
+    clearRoot();
+
+    let addButton = document.querySelector('.add__container');
+    addButton.style.display = 'none';
+
     let errorDiv = document.createElement('div');
     errorDiv.setAttribute('class', 'error-box');
     errorDiv.setAttribute('id', 'error-box');
 
     if (localStorage.getItem('theme') === 'light') {
         errorDiv.style.backgroundImage = "url('/client/img/Valley-light.jpg')";
-
     } else if (localStorage.getItem('theme') === 'dark') {
         errorDiv.style.backgroundImage = "url('/client/img/Valley-dark.jpg')";
     }
@@ -918,20 +951,19 @@ function page404() {
     errorParagraph.setAttribute('class', 'error-message');
     errorParagraph.textContent = 'Error 404 - Article not found!'
 
+    let anchorToHomepage = document.createElement('a');
+    anchorToHomepage.setAttribute('href', '');
     let goToHomepageButton = document.createElement('button');
     goToHomepageButton.setAttribute('type', 'button');
     goToHomepageButton.setAttribute('class', 'to-homepage');
     goToHomepageButton.textContent = 'BACK TO HOMEPAGE';
-    goToHomepageButton.addEventListener('click', function() {
-        location.hash = '';
-        location.reload();
-    })
 
     root.style.margin = 0;
 
     errorDiv.appendChild(errorInfoDiv);
     errorInfoDiv.appendChild(errorParagraph);
-    errorInfoDiv.appendChild(goToHomepageButton);
+    errorInfoDiv.appendChild(anchorToHomepage);
+    anchorToHomepage.appendChild(goToHomepageButton);
     root.appendChild(errorDiv);
 }
 
