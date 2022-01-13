@@ -1,5 +1,6 @@
 const root = document.getElementById('root');
 const static = document.getElementById('static');
+const articleButton = document.getElementById('add-article-button');
 let modalSuccess = document.getElementById('modal-success');
 let articleId = null;
 
@@ -156,7 +157,7 @@ function createAddButton() {
 
 function renderAddButton() {
     const domButton = createAddButton();
-    static.appendChild(domButton);
+    articleButton.appendChild(domButton);
     createAddButton();
 }
 
@@ -672,6 +673,10 @@ function clearStatic() {
     static.innerHTML = '';
 }
 
+function clearArticleButton() {
+    articleButton.innerHTML = '';
+}
+
 
 // EDIT ARTICLE FUNCTION
 function editArticle(article) {
@@ -962,9 +967,7 @@ if (currentTheme) {
 
 function page404() {
     clearRoot();
-
-    let addButton = document.querySelector('.add__container');
-    addButton.style.display = 'none';
+    clearArticleButton();
 
     let errorDiv = document.createElement('div');
     errorDiv.setAttribute('class', 'error-box');
