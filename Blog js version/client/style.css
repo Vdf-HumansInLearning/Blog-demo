@@ -11,6 +11,7 @@
     --black-white: #FFF;
     --moon: #9B9B9B;
     --sun: #FFF;
+    --disabled-color: #E6E6E6;
 }
 
 [data-theme="dark"] {
@@ -22,6 +23,7 @@
     --black-white: #1A1A1F;
     --moon: #1A1A1F;
     --sun: #9B9B9B;
+    --disabled-color: #494E5C;
 }
 
 body {
@@ -33,6 +35,17 @@ body {
     margin: 0px auto;
     overflow: hidden;
     background-color: var(--bg-color);
+}
+
+.alert-success { 
+    display: none;
+    width: 300px;
+    margin: 0px auto;
+    text-align: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 5px;
 }
 
 nav.nav {
@@ -450,44 +463,6 @@ button.to-homepage {
 }
 
 
-/* Add animation to "page content" */
-
-.animate-bottom {
-    position: relative;
-    -webkit-animation-name: animatebottom;
-    -webkit-animation-duration: 1s;
-    animation-name: animatebottom;
-    animation-duration: 1s
-}
-
-@-webkit-keyframes animatebottom {
-    from {
-        bottom: -100px;
-        opacity: 0
-    }
-
-    to {
-        bottom: 0px;
-        opacity: 1
-    }
-}
-
-@keyframes animatebottom {
-    from {
-        bottom: -100px;
-        opacity: 0
-    }
-
-    to {
-        bottom: 0;
-        opacity: 1
-    }
-}
-
-#myDiv {
-    display: none;
-    text-align: center;
-}
 
 .alert-delete-p {
     font-family: 'Montserrat', sans-serif;
@@ -613,7 +588,7 @@ div#error-modal {
 }
 
 input#date {
-    background: #e6e6e6;
+    background: var(--disabled-color);
 }
 
 .fas {

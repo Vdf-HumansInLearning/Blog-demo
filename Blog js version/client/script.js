@@ -47,12 +47,8 @@ function updatePrevAndNextButtons() {
 let alertNewArticle = document.createElement('div');
 alertNewArticle.setAttribute('class', 'alert alert-success');
 alertNewArticle.setAttribute('role', 'alert');
-alertNewArticle.style.display = 'none';
-alertNewArticle.style.width = 300 + 'px';
-alertNewArticle.style.margin = 0 + 'px auto';
-alertNewArticle.style.textAlign = 'center';
 alertNewArticle.textContent = 'The article has been created!';
-modalSuccess.appendChild(alertNewArticle);
+static.appendChild(alertNewArticle);
 
 function hideAlertSuccess() {
     let alert = document.querySelector('.alert-success');
@@ -78,9 +74,9 @@ function createThemeButton() {
     themeIcons.setAttribute('class', 'icons');
 
     let themeMoon = document.createElement('div');
-    themeMoon.setAttribute('class' , 'far fa-moon round');
+    themeMoon.setAttribute('class', 'far fa-moon round');
     let themeSun = document.createElement('div');
-    themeSun.setAttribute('class' , 'fas fa-sun round');
+    themeSun.setAttribute('class', 'fas fa-sun round');
 
     static.appendChild(themeBox);
     themeBox.appendChild(themeLabel);
@@ -95,7 +91,7 @@ function createThemeButton() {
 createThemeButton();
 
 // CREATING NAV BAR
-const nav = ['Home','Reviews', 'About', 'Contact'];
+const nav = ['Home', 'Reviews', 'About', 'Contact'];
 
 function createNav(nav) {
     const navBar = document.createElement('nav');
@@ -146,7 +142,7 @@ function createAddButton() {
     button.setAttribute('type', 'button');
     button.setAttribute('class', 'button open-modal fas fa-plus');
     button.textContent = ' Add Article';
-    button.addEventListener('click', function() {
+    button.addEventListener('click', function () {
         openModal();
         document.querySelector('.button--pink').style.display = 'block';
         document.querySelector('.button-edit-modal').style.display = 'none';
@@ -165,7 +161,7 @@ function renderAddButton() {
 function getArticleList() {
     fetch(`http://localhost:3007/articles?indexStart=${indexStart}&indexEnd=${indexEnd}`)
         .then(
-            function(response) {
+            function (response) {
                 if (response.status !== 200) {
                     console.log('Looks like there was a problem. Status Code: ' +
                         response.status);
@@ -174,7 +170,6 @@ function getArticleList() {
                 response.json()
                     .then(data => {
                         clearRoot();
-
                         createDomArticleList(data.articlesList);
                         totalNumberOfArticles = data.numberOfArticles;
                         updatePrevAndNextButtons();
@@ -182,7 +177,7 @@ function getArticleList() {
                     });
             }
         )
-        .catch(function(err) {
+        .catch(function (err) {
             console.log('Fetch Error :-S', err);
         });
 }
@@ -233,7 +228,7 @@ function createArticle(articles) {
         editButton.setAttribute('class', 'actions__btn border');
         editButton.setAttribute('id', element.id);
         editButton.textContent = 'Edit'
-        editButton.addEventListener('click', function() {
+        editButton.addEventListener('click', function () {
             openModal()
             editArticle(element);
             document.querySelector('.button-edit-modal').style.display = 'block';
@@ -274,7 +269,7 @@ function createArticle(articles) {
         readMoreButton.setAttribute('class', 'button button-details');
         readMoreAnchor.setAttribute('href', '#/article/' + element.id);
         readMoreButton.textContent = 'Read More';
-        readMoreButton.addEventListener('click', function() {
+        readMoreButton.addEventListener('click', function () {
             location.hash = '#/article/' + element.id;
         })
 
@@ -314,7 +309,7 @@ function createFooter() {
     previousButton.setAttribute('id', 'button-prev')
     previousButton.textContent = 'previous';
 
-    previousButton.addEventListener('click', function() {
+    previousButton.addEventListener('click', function () {
         updateStartEndIndexes('previous');
         getArticleList();
     });
@@ -353,7 +348,7 @@ function detailsFooter(prevId, nextId) {
         prevBtn.setAttribute('class', 'footer__link');
         prevBtn.textContent = 'previous article';
 
-        prevBtn.addEventListener('click', function() {
+        prevBtn.addEventListener('click', function () {
             location.hash = `#/article/${prevId}`;
         })
         footer.appendChild(prevBtn);
@@ -364,7 +359,7 @@ function detailsFooter(prevId, nextId) {
         nextBtn.setAttribute('class', 'footer__link footer__link--next');
         nextBtn.textContent = 'next article';
 
-        nextBtn.addEventListener('click', function() {
+        nextBtn.addEventListener('click', function () {
             location.hash = `#/article/${nextId}`;
         })
         footer.appendChild(prevDiv);
@@ -448,8 +443,8 @@ function fetchArticleDetails() {
         if (articleId) {
             fetch(`http://localhost:3007/articles/${articleId}`)
                 .then(
-                    function(response) {
-                        response.json().then(function(data) {
+                    function (response) {
+                        response.json().then(function (data) {
                             if (data.status !== 404) {
                                 clearRoot();
                                 clearArticleButton();
@@ -471,7 +466,7 @@ function fetchArticleDetails() {
                         })
 
                     })
-                .catch(function(err) {
+                .catch(function (err) {
                     console.log('Fetch Error :-S', err);
                 });
         }
@@ -564,7 +559,7 @@ function createModal() {
     saveModalButton.setAttribute('type', 'button');
     saveModalButton.setAttribute('class', 'button button--pink');
     saveModalButton.textContent = 'Save';
-    saveModalButton.addEventListener('click', function() {
+    saveModalButton.addEventListener('click', function () {
 
         let isValid = validateModal();
         if (isValid) {
@@ -668,6 +663,7 @@ renderModalAlert();
 // CLEAR THE CONTENT
 function clearRoot() {
     root.innerHTML = '';
+    window.scrollTo(0, 0);
 }
 
 function clearStatic() {
@@ -698,7 +694,7 @@ function editArticle(article) {
     textarea.value = article.content;
 
     let saveModalButton = document.querySelector('.button-edit-modal');
-    saveModalButton.addEventListener('click', function() {
+    saveModalButton.addEventListener('click', function () {
         updateArticle(article.id);
     })
 }
@@ -717,10 +713,11 @@ window.onload = () => {
 
 
 function locationHashChange() {
+
     const hash = location.hash;
 
     if (hash === '#/') {
-        renderArticleListPage()
+        renderArticleListPage();
         return;
     }
     if (hash === '#/not-found') {
@@ -813,7 +810,7 @@ btnDeleteAlert.addEventListener('click', (e) => {
 })
 
 // CLOSING THE MODAL ALERT
-closeModalAlert.addEventListener('click', function(e) {
+closeModalAlert.addEventListener('click', function (e) {
     hideModalAlert();
 });
 
@@ -828,8 +825,8 @@ function deleteArticle() {
         return;
     }
     fetch('http://localhost:3007/articles/' + articleId, {
-            method: 'DELETE',
-        })
+        method: 'DELETE',
+    })
         .then(response => response.json())
         .then(data => {
             articleId = null;
@@ -875,13 +872,13 @@ function createNewArticle() {
 
     }).then(res => res.json())
 
-    .then(data => {
-        hideModal();
-        clearForm();
-        getArticleList();
-    })
+        .then(data => {
+            hideModal();
+            clearForm();
+            getArticleList();
+        })
 
-    .catch((err) => console.log(err));
+        .catch((err) => console.log(err));
 }
 
 // EDITING ARTICLE
@@ -904,12 +901,12 @@ function updateArticle(id) {
         content: textarea,
     }
     fetch('http://localhost:3007/articles/' + id, {
-            method: 'PUT',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify(putObject),
-        })
+        method: 'PUT',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify(putObject),
+    })
         .then(response => response.json())
         .then((data) => {
             hideModal();
