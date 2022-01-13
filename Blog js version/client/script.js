@@ -452,6 +452,7 @@ function fetchArticleDetails() {
                         response.json().then(function(data) {
                             if (data.status !== 404) {
                                 clearRoot();
+                                clearArticleButton();
 
                                 let main = document.createElement('main');
                                 main.setAttribute('class', 'main-details');
