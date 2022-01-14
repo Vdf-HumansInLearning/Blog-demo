@@ -55,7 +55,7 @@ function hideAlertSuccess() {
     alert.style.display = 'block';
     setTimeout(() => {
         alert.style.display = 'none';
-    }, 2000);
+    }, 5000);
 }
 
 function createThemeButton() {
@@ -373,6 +373,7 @@ function createDetailsArticle(article) {
 
     const divArticle = document.createElement('div');
     divArticle.setAttribute('id', 'article' + article.id);
+    divArticle.setAttribute('class', 'article');
     domArticle.appendChild(divArticle);
     const domTitle = document.createElement('h2');
     domTitle.textContent = article.title;
@@ -695,7 +696,11 @@ function editArticle(article) {
 
     let saveModalButton = document.querySelector('.button-edit-modal');
     saveModalButton.addEventListener('click', function () {
-        updateArticle(article.id);
+        let isValid = validateModal();
+
+        if (isValid) {
+            updateArticle(article.id);
+        }
     })
 }
 // CREATE HASH ROUTE
@@ -895,7 +900,7 @@ function updateArticle(id) {
         title: title,
         tag: tag,
         author: author,
-        li3: date,
+        date: date,
         imgUrl: imgUrl,
         saying: saying,
         content: textarea,
@@ -1004,7 +1009,7 @@ function page404() {
 
 function validateModal() {
     let regexJpg = /\.(jpe?g|png|gif|bmp)$/i;
-    let upperCaseLetter = /^[A-Z]+[a-zA-Z]*$/;
+    let upperCaseLetter = /([A-Z]{1})([a-z]+)(\s)([A-Z]{1})([a-z]+){1}(|\s)$/g;
 
     let isValid = true;
     let errors = [];
@@ -1032,13 +1037,17 @@ function validateModal() {
         isValid = false;
         errors.push('Please insert the tag of your article!');
     }
+    if (tag.value.length > 30) {
+        isValid = false;
+        errors.push('Please keep your tag under 30 characters!');
+    }
     if (!author.value) {
         isValid = false;
         errors.push('Please insert the author of your article!');
     }
     if (!upperCaseLetter.test(author.value)) {
         isValid = false;
-        errors.push('The first letter must be uppercase and you must use only letters!')
+        errors.push('The first and last name of the author must be uppercase!')
     }
 
     if (!imgUrl.value) {

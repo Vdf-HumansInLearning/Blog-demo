@@ -161,6 +161,8 @@ img {
     height: 720px;
     margin-bottom: 80px;
     color: var(--font-color);
+    display: block;
+    margin: 0 auto;
 
 }
 
