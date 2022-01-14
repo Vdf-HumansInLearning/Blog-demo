@@ -1,6 +1,7 @@
 const root = document.getElementById('root');
 const static = document.getElementById('static');
 const articleButton = document.getElementById('add-article-button');
+let modalAlert = document.getElementById('modal-alert');
 let modalSuccess = document.getElementById('modal-success');
 let articleId = null;
 
@@ -9,10 +10,13 @@ let indexStart = 0;
 let indexEnd = numberOfArticles - 1;
 let totalNumberOfArticles = 0;
 
+// INITIALIZING ADD BUTTON ON EVERY PAGE
 function articleListInit() {
     renderAddButton();
 }
 
+
+// UPDATE INDEXES OF ARTICLES
 function updateStartEndIndexes(button) {
     if (button === 'next') {
         indexStart = indexStart + numberOfArticles;
@@ -25,6 +29,7 @@ function updateStartEndIndexes(button) {
     }
 }
 
+// UPDATE NEXT AND PREV BUTTONS ON INDEX PAGE
 function updatePrevAndNextButtons() {
     let prevBtn = document.getElementById('button-prev');
     let nextBtn = document.getElementById('button-next');
@@ -43,13 +48,14 @@ function updatePrevAndNextButtons() {
     }
 }
 
-
+// CREATE ALERT ON SUCCESSFULLY CREATING NEW ARTICLE
 let alertNewArticle = document.createElement('div');
 alertNewArticle.setAttribute('class', 'alert alert-success');
 alertNewArticle.setAttribute('role', 'alert');
 alertNewArticle.textContent = 'The article has been created!';
 static.appendChild(alertNewArticle);
 
+// HIDE ALERT SUCCESS FUNCTION
 function hideAlertSuccess() {
     let alert = document.querySelector('.alert-success');
     alert.style.display = 'block';
@@ -58,6 +64,7 @@ function hideAlertSuccess() {
     }, 5000);
 }
 
+// CREATE THE DARK THEME BUTTON
 function createThemeButton() {
     let themeBox = document.createElement('div');
     themeBox.setAttribute('class', 'theme-switch-box');
@@ -84,8 +91,6 @@ function createThemeButton() {
     themeLabel.appendChild(themeIcons);
     themeIcons.appendChild(themeMoon);
     themeIcons.appendChild(themeSun);
-
-
 }
 
 createThemeButton();
@@ -124,10 +129,9 @@ function renderNavBar(nav) {
     const domNavBar = createNav(nav);
     static.appendChild(domNavBar);
     createNav(nav);
-
 }
 
-// initializing navbar 
+// INITIALIZING NAV BAR
 function appInit() {
     renderNavBar(nav)
 }
@@ -142,7 +146,7 @@ function createAddButton() {
     button.setAttribute('type', 'button');
     button.setAttribute('class', 'button open-modal fas fa-plus');
     button.textContent = ' Add Article';
-    button.addEventListener('click', function () {
+    button.addEventListener('click', function() {
         openModal();
         document.querySelector('.button--pink').style.display = 'block';
         document.querySelector('.button-edit-modal').style.display = 'none';
@@ -161,7 +165,7 @@ function renderAddButton() {
 function getArticleList() {
     fetch(`http://localhost:3007/articles?indexStart=${indexStart}&indexEnd=${indexEnd}`)
         .then(
-            function (response) {
+            function(response) {
                 if (response.status !== 200) {
                     console.log('Looks like there was a problem. Status Code: ' +
                         response.status);
@@ -177,7 +181,7 @@ function getArticleList() {
                     });
             }
         )
-        .catch(function (err) {
+        .catch(function(err) {
             console.log('Fetch Error :-S', err);
         });
 }
@@ -228,7 +232,7 @@ function createArticle(articles) {
         editButton.setAttribute('class', 'actions__btn border');
         editButton.setAttribute('id', element.id);
         editButton.textContent = 'Edit'
-        editButton.addEventListener('click', function () {
+        editButton.addEventListener('click', function() {
             openModal()
             editArticle(element);
             document.querySelector('.button-edit-modal').style.display = 'block';
@@ -269,7 +273,7 @@ function createArticle(articles) {
         readMoreButton.setAttribute('class', 'button button-details');
         readMoreAnchor.setAttribute('href', '#/article/' + element.id);
         readMoreButton.textContent = 'Read More';
-        readMoreButton.addEventListener('click', function () {
+        readMoreButton.addEventListener('click', function() {
             location.hash = '#/article/' + element.id;
         })
 
@@ -290,7 +294,7 @@ function createArticle(articles) {
 
 }
 
-// RENDERING ALL ARTICLES FROM MAIN PAGE
+// RENDERING ALL ARTICLES FROM MAIN PAGE + FOOTER
 function createDomArticleList(articles) {
     clearRoot();
     const domArticle = createArticle(articles);
@@ -309,7 +313,7 @@ function createFooter() {
     previousButton.setAttribute('id', 'button-prev')
     previousButton.textContent = 'previous';
 
-    previousButton.addEventListener('click', function () {
+    previousButton.addEventListener('click', function() {
         updateStartEndIndexes('previous');
         getArticleList();
     });
@@ -348,7 +352,7 @@ function detailsFooter(prevId, nextId) {
         prevBtn.setAttribute('class', 'footer__link');
         prevBtn.textContent = 'previous article';
 
-        prevBtn.addEventListener('click', function () {
+        prevBtn.addEventListener('click', function() {
             location.hash = `#/article/${prevId}`;
         })
         footer.appendChild(prevBtn);
@@ -359,7 +363,7 @@ function detailsFooter(prevId, nextId) {
         nextBtn.setAttribute('class', 'footer__link footer__link--next');
         nextBtn.textContent = 'next article';
 
-        nextBtn.addEventListener('click', function () {
+        nextBtn.addEventListener('click', function() {
             location.hash = `#/article/${nextId}`;
         })
         footer.appendChild(prevDiv);
@@ -398,8 +402,6 @@ function createDetailsArticle(article) {
     domDate.setAttribute('class', 'info__item');
     domDate.textContent = article.date;
 
-
-
     domUl.appendChild(domTag);
     domUl.appendChild(domAuthor);
     domAuthor.appendChild(domSpan);
@@ -436,16 +438,17 @@ function createDetailsArticle(article) {
 }
 
 // CREATING ONE DETAILED ARTICLE
-function fetchArticleDetails() {
+function getArticleDetails() {
     let currLocation = window.location.hash;
+
     if (currLocation.startsWith('#/article')) {
         const articleId = location.hash.substring(10);
 
         if (articleId) {
             fetch(`http://localhost:3007/articles/${articleId}`)
                 .then(
-                    function (response) {
-                        response.json().then(function (data) {
+                    function(response) {
+                        response.json().then(function(data) {
                             if (data.status !== 404) {
                                 clearRoot();
                                 clearArticleButton();
@@ -467,7 +470,7 @@ function fetchArticleDetails() {
                         })
 
                     })
-                .catch(function (err) {
+                .catch(function(err) {
                     console.log('Fetch Error :-S', err);
                 });
         }
@@ -560,7 +563,7 @@ function createModal() {
     saveModalButton.setAttribute('type', 'button');
     saveModalButton.setAttribute('class', 'button button--pink');
     saveModalButton.textContent = 'Save';
-    saveModalButton.addEventListener('click', function () {
+    saveModalButton.addEventListener('click', function() {
 
         let isValid = validateModal();
         if (isValid) {
@@ -607,8 +610,6 @@ function renderModal() {
 renderModal();
 
 // CREATE MODAL ALERT
-let modalAlert = document.getElementById('modal-alert');
-
 function createModalAlert() {
     const divAlert = document.createElement('div');
     divAlert.setAttribute('id', 'id01');
@@ -653,6 +654,7 @@ function createModalAlert() {
 
     return divAlert;
 }
+
 // RENDER THE MODAL
 function renderModalAlert() {
     const domModalAlert = createModalAlert();
@@ -674,71 +676,6 @@ function clearStatic() {
 function clearArticleButton() {
     articleButton.innerHTML = '';
 }
-
-
-// EDIT ARTICLE FUNCTION
-function editArticle(article) {
-    let title = document.getElementById('title');
-    let tag = document.getElementById('tag');
-    let author = document.getElementById('author');
-    let date = document.getElementById('date');
-    let url = document.getElementById('url');
-    let saying = document.getElementById('saying');
-    let textarea = document.getElementById('textarea');
-
-    title.value = article.title;
-    tag.value = article.tag;
-    author.value = article.author;
-    date.value = article.date;
-    url.value = article.imgUrl;
-    saying.value = article.saying;
-    textarea.value = article.content;
-
-    let saveModalButton = document.querySelector('.button-edit-modal');
-    saveModalButton.addEventListener('click', function () {
-        let isValid = validateModal();
-
-        if (isValid) {
-            updateArticle(article.id);
-        }
-    })
-}
-// CREATE HASH ROUTE
-
-window.onload = () => {
-    const initialHash = window.location.hash;
-
-    if (initialHash === '') {
-        window.location.hash = '#/';
-    } else {
-        locationHashChange();
-    }
-};
-
-
-
-function locationHashChange() {
-
-    const hash = location.hash;
-
-    if (hash === '#/') {
-        renderArticleListPage();
-        return;
-    }
-    if (hash === '#/not-found') {
-        page404();
-        closeDomSpinner();
-        return;
-    }
-    if (hash.includes('#/article/') && hash.substring(10)) {
-        fetchArticleDetails();
-        return;
-    }
-    closeDomSpinner();
-    page404();
-}
-
-window.addEventListener('hashchange', locationHashChange, false);
 
 function renderArticleListPage() {
     createDomSpinner();
@@ -783,8 +720,6 @@ function openModal() {
 }
 
 // CLOSING THE MODAL
-closeModal.addEventListener('click', hideModal)
-
 function hideModal() {
     let error = document.getElementById('error-modal');
 
@@ -793,6 +728,8 @@ function hideModal() {
     error.innerHTML = '';
     clearForm();
 }
+
+closeModal.addEventListener('click', hideModal);
 
 // GETTING THE ELEMENTS TO CLOSE THE MODAL ALERT
 let modalOverlayAlert = document.querySelector('.modal__overlay__alert');
@@ -815,7 +752,7 @@ btnDeleteAlert.addEventListener('click', (e) => {
 })
 
 // CLOSING THE MODAL ALERT
-closeModalAlert.addEventListener('click', function (e) {
+closeModalAlert.addEventListener('click', function(e) {
     hideModalAlert();
 });
 
@@ -830,8 +767,8 @@ function deleteArticle() {
         return;
     }
     fetch('http://localhost:3007/articles/' + articleId, {
-        method: 'DELETE',
-    })
+            method: 'DELETE',
+        })
         .then(response => response.json())
         .then(data => {
             articleId = null;
@@ -877,13 +814,41 @@ function createNewArticle() {
 
     }).then(res => res.json())
 
-        .then(data => {
-            hideModal();
-            clearForm();
-            getArticleList();
-        })
+    .then(data => {
+        hideModal();
+        clearForm();
+        getArticleList();
+    })
 
-        .catch((err) => console.log(err));
+    .catch((err) => console.log(err));
+}
+
+// EDIT ARTICLE FUNCTION
+function editArticle(article) {
+    let title = document.getElementById('title');
+    let tag = document.getElementById('tag');
+    let author = document.getElementById('author');
+    let date = document.getElementById('date');
+    let url = document.getElementById('url');
+    let saying = document.getElementById('saying');
+    let textarea = document.getElementById('textarea');
+
+    title.value = article.title;
+    tag.value = article.tag;
+    author.value = article.author;
+    date.value = article.date;
+    url.value = article.imgUrl;
+    saying.value = article.saying;
+    textarea.value = article.content;
+
+    let saveModalButton = document.querySelector('.button-edit-modal');
+    saveModalButton.addEventListener('click', function() {
+        let isValid = validateModal();
+
+        if (isValid) {
+            updateArticle(article.id);
+        }
+    })
 }
 
 // EDITING ARTICLE
@@ -906,12 +871,12 @@ function updateArticle(id) {
         content: textarea,
     }
     fetch('http://localhost:3007/articles/' + id, {
-        method: 'PUT',
-        headers: {
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify(putObject),
-    })
+            method: 'PUT',
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify(putObject),
+        })
         .then(response => response.json())
         .then((data) => {
             hideModal();
@@ -954,7 +919,6 @@ function changeImageNotFound(theme) {
 
 }
 
-
 toggleSwitch.addEventListener('change', switchTheme, false);
 
 const currentTheme = localStorage.getItem('theme') ? localStorage.getItem('theme') : null;
@@ -968,7 +932,8 @@ if (currentTheme) {
 }
 
 
-function page404() {
+// CREATING THE ERROR PAGE
+function createPage404() {
     clearRoot();
     clearArticleButton();
 
@@ -1006,7 +971,7 @@ function page404() {
 }
 
 
-
+// VALIDATING THE MODAL FUNCTION
 function validateModal() {
     let regexJpg = /\.(jpe?g|png|gif|bmp)$/i;
     let upperCaseLetter = /([A-Z]{1})([a-z]+)(\s)([A-Z]{1})([a-z]+){1}(|\s)$/g;
@@ -1075,3 +1040,37 @@ function validateModal() {
 
     return isValid;
 }
+
+// CREATE HASH ROUTE
+window.onload = () => {
+    const initialHash = window.location.hash;
+
+    if (initialHash === '') {
+        window.location.hash = '#/';
+    } else {
+        locationHashChange();
+    }
+};
+
+function locationHashChange() {
+
+    const hash = location.hash;
+
+    if (hash === '#/') {
+        renderArticleListPage();
+        return;
+    }
+    if (hash === '#/not-found') {
+        createPage404();
+        closeDomSpinner();
+        return;
+    }
+    if (hash.includes('#/article/') && hash.substring(10)) {
+        getArticleDetails();
+        return;
+    }
+    closeDomSpinner();
+    createPage404();
+}
+
+window.addEventListener('hashchange', locationHashChange, false);
