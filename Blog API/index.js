@@ -4,6 +4,8 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const uuid = require("uuid");
 const { v4: uuidv4 } = require('uuid');
+var path = require('path');
+var public = path.join(__dirname, 'public');
 
 const fs = require("fs");
 
@@ -12,6 +14,13 @@ const app = express();
 app.use(morgan("tiny"));
 app.use(bodyParser.json());
 app.use(cors());
+
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(public, 'index.html'));
+});
+app.use('/', express.static(public));
+
 
 
 
@@ -53,7 +62,7 @@ app.post("/articles", (req, res) => {
         "tag": tag,
         "author": author,
         "date": date,
-        "imgUrl": imgUrl,
+        "imgUrl":'img/'+ imgUrl,
         "saying": saying,
         "content": content
     })
