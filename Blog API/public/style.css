@@ -589,6 +589,11 @@ input#date {
 }
 
 @media (max-width: 768px) {
+    #loader{
+        position: absolute;
+        left: 91%;
+        top: 426px;
+    }
     .nav__link,
     button.button {
         font-size: 18px;
@@ -635,6 +640,11 @@ input#date {
 @media (max-width: 425px) {
     .theme-switch {
         margin-right: 61px;
+    }
+    #loader{
+        position: absolute;
+        left: 691px;
+        top: 426px;
     }
     .icons {
         width: 120px;
