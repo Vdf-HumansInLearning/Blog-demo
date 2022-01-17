@@ -952,7 +952,7 @@ function createPage404() {
 
     let errorParagraph = document.createElement('h1');
     errorParagraph.setAttribute('class', 'error-message');
-    errorParagraph.textContent = 'Error 404 - Article not found!'
+    errorParagraph.textContent = 'Error 404 - Page not found!'
 
     let anchorToHomepage = document.createElement('a');
     anchorToHomepage.setAttribute('href', '');
@@ -1012,7 +1012,7 @@ function validateModal() {
     }
     if (!upperCaseLetter.test(author.value)) {
         isValid = false;
-        errors.push('The first and last name of the author must be uppercase!')
+        errors.push('Please use capital letters for the author\'s first and last name!')
     }
 
     if (!imgUrl.value) {
