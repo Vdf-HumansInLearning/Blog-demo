@@ -231,9 +231,9 @@ function createArticle(articles) {
         editButton.setAttribute('type', 'button');
         editButton.setAttribute('class', 'actions__btn border');
         editButton.setAttribute('id', element.id);
-        editButton.textContent = 'Edit'
+        editButton.textContent = 'Edit';
         editButton.addEventListener('click', function() {
-            openModal()
+            openModal();
             editArticle(element);
             document.querySelector('.button-edit-modal').style.display = 'block';
             document.querySelector('.button--pink').style.display = 'none';
@@ -277,7 +277,6 @@ function createArticle(articles) {
             location.hash = '#/article/' + element.id;
         })
 
-
         readMoreDiv.appendChild(readMoreAnchor);
         readMoreAnchor.appendChild(readMoreButton);
 
@@ -288,10 +287,8 @@ function createArticle(articles) {
         articleDiv.appendChild(domImg);
         articleDiv.appendChild(domContainer);
         articleDiv.appendChild(readMoreDiv);
-
     });
     return domArticle;
-
 }
 
 // RENDERING ALL ARTICLES FROM MAIN PAGE + FOOTER
@@ -419,7 +416,6 @@ function createDetailsArticle(article) {
     divArticle.appendChild(domImg);
     divArticle.appendChild(contentContainer);
 
-
     const firstParagraph = document.createElement('p');
     firstParagraph.textContent = article.content.substring(0, article.content.length / 2);
 
@@ -475,7 +471,6 @@ function getArticleDetails() {
                 });
         }
     }
-
 }
 
 // CREATE MODAL
@@ -571,7 +566,6 @@ function createModal() {
             createNewArticle();
             errorMessage.innerHTML = '';
         }
-
     })
 
     const editModalButton = document.createElement('button');
@@ -748,7 +742,6 @@ btnDeleteAlert.addEventListener('click', (e) => {
     deleteArticle(articleId);
     hideModalAlert();
     e.stopPropagation();
-
 })
 
 // CLOSING THE MODAL ALERT
