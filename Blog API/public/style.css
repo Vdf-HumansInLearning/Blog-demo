@@ -8,7 +8,6 @@
     --secondary-color-font: #000;
     --bg-color: #FFF;
     --pink: #FFE3E3;
-    --black-white: #FFF;
     --moon: #9B9B9B;
     --sun: #FFF;
     --disabled-color: #E6E6E6;
@@ -20,7 +19,6 @@
     --secondary-color-font: #818CAB;
     --bg-color: #1A1A1F;
     --pink: #494E5C;
-    --black-white: #1A1A1F;
     --moon: #1A1A1F;
     --sun: #9B9B9B;
     --disabled-color: #494E5C;
@@ -97,7 +95,7 @@ button.button {
 }
 
 button.open-modal {
-    background-color: var(--black-white);
+    background-color: var(--bg-color);
 }
 
 .title {
@@ -127,7 +125,7 @@ li.info__item {
 }
 
 span.info__mark {
-    color: var(--secondary-color-font);
+    color: var(--font-color);
     font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     line-height: 18px;
