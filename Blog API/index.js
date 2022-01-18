@@ -22,56 +22,6 @@ app.get('/', function(req, res) {
 app.use('/', express.static(public));
 
 
-
-
-app.get("/articles/:id", (req, res) => {
-    const articlesList = readJSONFile();
-    const id = req.params.id;
-
-    let article;
-
-    for (let i = 0; i < articlesList.length; i++) {
-        if (articlesList[i].id == id) {
-            const nextId = i === articlesList.length - 1 ? null : articlesList[i + 1].id;
-            const prevId = i === 0 ? null : articlesList[i - 1].id;
-
-            article = {...articlesList[i], prevId, nextId };
-        }
-    }
-
-    if (article === undefined) {
-        article = { message: 'article not found', status: 404 };
-    }
-    res.json(article);
-});
-
-app.post("/articles", (req, res) => {
-    const articlesList = readJSONFile();
-
-    let title = req.body.title;
-    let tag = req.body.tag;
-    let author = req.body.author;
-    let date = req.body.date;
-    let imgUrl = req.body.imgUrl;
-    let saying = req.body.saying;
-    let content = req.body.content
-
-    articlesList.push({
-        "id": uuidv4(),
-        "title": title,
-        "tag": tag,
-        "author": author,
-        "date": date,
-        "imgUrl":'img/'+ imgUrl,
-        "saying": saying,
-        "content": content
-    })
-
-    writeJSONFile(articlesList);
-    res.json(articlesList);
-});
-
-
 // Read All
 app.get("/articles", (req, res) => {
     const articlesList = readJSONFile();
@@ -96,6 +46,57 @@ app.get("/articles", (req, res) => {
 
 });
 
+
+app.get("/articles/:id", (req, res) => {
+    const articlesList = readJSONFile();
+    const id = req.params.id;
+
+    let article;
+
+    for (let i = 0; i < articlesList.length; i++) {
+        if (articlesList[i].id == id) {
+            const nextId = i === articlesList.length - 1 ? null : articlesList[i + 1].id;
+            const prevId = i === 0 ? null : articlesList[i - 1].id;
+
+            article = {...articlesList[i], prevId, nextId };
+        }
+    }
+
+    if (article === undefined) {
+        article = { message: 'article not found', status: 404 };
+    }
+    res.json(article);
+});
+
+// Post
+app.post("/articles", (req, res) => {
+    const articlesList = readJSONFile();
+
+    let title = req.body.title;
+    let tag = req.body.tag;
+    let author = req.body.author;
+    let date = req.body.date;
+    let imgUrl = req.body.imgUrl;
+    let saying = req.body.saying;
+    let content = req.body.content
+
+    articlesList.push({
+        "id": uuidv4(),
+        "title": title,
+        "tag": tag,
+        "author": author,
+        "date": date,
+        "imgUrl": 'img/' + imgUrl,
+        "saying": saying,
+        "content": content
+    })
+
+    writeJSONFile(articlesList);
+    res.json(articlesList);
+});
+
+
+// Put
 app.put("/articles/:id", (req, res) => {
     const articlesList = readJSONFile();
     const updatedArticleId = req.params.id;
@@ -111,6 +112,7 @@ app.put("/articles/:id", (req, res) => {
     res.json(articlesList[index])
 });
 
+// Delete
 app.delete("/articles/:id", (req, res) => {
     const articlesList = readJSONFile();
     const articleId = req.params.id;

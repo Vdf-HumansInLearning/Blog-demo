@@ -505,7 +505,7 @@ button.to-homepage {
     cursor: pointer;
 }
 
-.modalAlert {
+.delete-modal-alert {
     display: none;
     position: fixed;
     z-index: 1;
@@ -589,7 +589,7 @@ input#date {
 }
 
 @media (max-width: 768px) {
-    #loader{
+    #loader {
         position: absolute;
         left: 91%;
         top: 426px;
@@ -641,7 +641,7 @@ input#date {
     .theme-switch {
         margin-right: 61px;
     }
-    #loader{
+    #loader {
         position: absolute;
         left: 691px;
         top: 426px;

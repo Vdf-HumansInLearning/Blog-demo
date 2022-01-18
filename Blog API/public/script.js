@@ -5,16 +5,11 @@ let modalAlert = document.getElementById('modal-alert');
 let modalSuccess = document.getElementById('modal-success');
 let articleId = null;
 
+// initializing index page variables
 let numberOfArticles = 4;
 let indexStart = 0;
 let indexEnd = numberOfArticles - 1;
 let totalNumberOfArticles = 0;
-
-// INITIALIZING ADD BUTTON ON EVERY PAGE
-function articleListInit() {
-    renderAddButton();
-}
-
 
 // UPDATE INDEXES OF ARTICLES
 function updateStartEndIndexes(button) {
@@ -121,19 +116,12 @@ function createNav(nav) {
         li.appendChild(anchor);
 
     })
-
-    return navBar;
-}
-
-function renderNavBar(nav) {
-    const domNavBar = createNav(nav);
-    static.appendChild(domNavBar);
-    createNav(nav);
+    static.appendChild(navBar);
 }
 
 // INITIALIZING NAV BAR
 function appInit() {
-    renderNavBar(nav)
+    createNav(nav);
 }
 
 appInit();
@@ -152,14 +140,10 @@ function createAddButton() {
         document.querySelector('.button-edit-modal').style.display = 'none';
     })
     div.appendChild(button);
-    return div;
+
+    articleButton.appendChild(div);
 }
 
-function renderAddButton() {
-    const domButton = createAddButton();
-    articleButton.appendChild(domButton);
-    createAddButton();
-}
 
 // TAKING DATA FROM SERVER
 function getArticleList() {
@@ -255,7 +239,13 @@ function createArticle(articles) {
         domActionDiv.appendChild(deleteButton);
 
         const paragraph = document.createElement('p');
-        paragraph.textContent = element.content.substring(0, element.content.length / 2) + ' ...';
+        let text = element.content;
+        let spliced = text.substring(0, text.length / 2);
+        if (text.charAt(spliced.length - 1) === '!' || text.charAt(spliced.length - 1) === '.' || text.charAt(spliced.length - 1) === '?') {
+            paragraph.textContent = text.substring(0, text.length / 2) + ' ...';
+        } else {
+            paragraph.textContent = text.substring(0, spliced.lastIndexOf('.') + 1) + ' ...'
+        }
 
         const domContainer = document.createElement('div');
         domContainer.setAttribute('class', 'content__container');
@@ -297,7 +287,7 @@ function createDomArticleList(articles) {
     const domArticle = createArticle(articles);
     root.appendChild(domArticle);
     createArticle(articles);
-    renderFooter();
+    createFooter();
 }
 
 // CREATE FOOTER FROM MAIN PAGE
@@ -328,15 +318,9 @@ function createFooter() {
     footer.appendChild(previousButton);
     footer.appendChild(nextButton);
 
-    return footer;
+    root.appendChild(footer);
 }
 
-// RENDER FOOTER FROM MAIN PAGE
-function renderFooter() {
-    const domFooter = createFooter();
-    root.appendChild(domFooter);
-    createFooter();
-}
 
 // CREATE FOOTER FROM DETAILS PAGE
 function detailsFooter(prevId, nextId) {
@@ -417,10 +401,16 @@ function createDetailsArticle(article) {
     divArticle.appendChild(contentContainer);
 
     const firstParagraph = document.createElement('p');
-    firstParagraph.textContent = article.content.substring(0, article.content.length / 2);
+    let text = article.content;
+    let spliced = text.substring(0, text.length / 2);
+    if (text.charAt(spliced.length - 1) === '!' || text.charAt(spliced.length - 1) === '.' || text.charAt(spliced.length - 1) === '?') {
+        firstParagraph.textContent = text.substring(0, text.length / 2);
+    } else {
+        firstParagraph.textContent = text.substring(0, spliced.lastIndexOf('.') + 1);
+    }
 
     const secondParagraph = document.createElement('p');
-    secondParagraph.textContent = article.content.substring(article.content.length / 2);
+    secondParagraph.textContent = text.substring(spliced.lastIndexOf('.') + 1);
 
     const saying = document.createElement('p');
     saying.setAttribute('class', 'saying');
@@ -461,7 +451,6 @@ function getArticleDetails() {
                                 closeDomSpinner();
                             } else {
                                 location.hash = 'not-found';
-                                location.reload();
                             }
                         })
 
@@ -591,27 +580,19 @@ function createModal() {
     modalButtonsDiv.appendChild(saveModalButton);
     modalButtonsDiv.appendChild(editModalButton);
 
-    return modalDiv;
+    modal.appendChild(modalDiv);
 }
 
-// RENDER THE MODAL
-function renderModal() {
-    const domModal = createModal();
-    modal.appendChild(domModal);
-    createModal();
-}
-
-renderModal();
+createModal();
 
 // CREATE MODAL ALERT
 function createModalAlert() {
     const divAlert = document.createElement('div');
-    divAlert.setAttribute('id', 'id01');
-    divAlert.setAttribute('class', 'modalAlert');
+    divAlert.setAttribute('id', 'div-modal-alert');
+    divAlert.setAttribute('class', 'delete-modal-alert');
 
     const formAlert = document.createElement('div');
     formAlert.setAttribute('class', 'modal-content');
-    formAlert.setAttribute('action', '/action_page.php');
 
     const divAlertContainer = document.createElement('div');
     divAlertContainer.setAttribute('class', 'alertContainer');
@@ -646,16 +627,10 @@ function createModalAlert() {
     divClearFix.appendChild(cancelAlertBtn);
     divClearFix.appendChild(deleteAlertBtn);
 
-    return divAlert;
+    modalAlert.appendChild(divAlert);
 }
 
-// RENDER THE MODAL
-function renderModalAlert() {
-    const domModalAlert = createModalAlert();
-    modalAlert.appendChild(domModalAlert);
-    createModalAlert();
-}
-renderModalAlert();
+createModalAlert();
 
 // CLEAR THE CONTENT
 function clearRoot() {
@@ -672,12 +647,12 @@ function clearArticleButton() {
 }
 
 function renderArticleListPage() {
-    createDomSpinner();
-    articleListInit();
+    displayDomSpinner();
+    createAddButton();
     getArticleList();
 }
 
-function createDomSpinner() {
+function displayDomSpinner() {
     document.getElementById('loader').style.display = 'block';
 }
 
@@ -731,7 +706,7 @@ let closeModalAlert = document.querySelector('.cancelAlertBtn');
 
 // OPEN MODAL ALERT FUNCTION, called directly in the function that creates the ADD BUTTON
 function openModalAlert() {
-    document.getElementById('id01').style.display = 'block';
+    document.getElementById('div-modal-alert').style.display = 'block';
     modalOverlayAlert.style.visibility = 'visible';
     modalOverlayAlert.style.opacity = 1;
 }
@@ -909,7 +884,6 @@ function changeImageNotFound(theme) {
             img.style.backgroundImage = 'url("/img/Valley-light.jpg")';
         }
     }
-
 }
 
 toggleSwitch.addEventListener('change', switchTheme, false);
