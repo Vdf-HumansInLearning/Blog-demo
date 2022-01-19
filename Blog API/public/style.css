@@ -742,6 +742,6 @@ input#date {
     .error-box {
         position: relative;
         height: 262vh;
-        background-position: right;
+        background-position: left;
     }
 }
