@@ -234,7 +234,7 @@ footer.footer {
     transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
 }
 
-.modala {
+.add-modal {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -468,13 +468,13 @@ button.to-homepage {
 
 /* The modalAlert (background) */
 
-.cancelAlertBtn,
-.deleteAlertBtn {
+.cancel-alert-button,
+.delete-alert-button {
     float: left;
     width: 50%;
 }
 
-.cancelAlertBtn {
+.cancel-alert-button {
     width: 300px;
     border-radius: 50px;
     border: 1px solid var(--primary-color-font);
@@ -490,7 +490,7 @@ button.to-homepage {
     margin-right: 50px;
 }
 
-.deleteAlertBtn {
+.delete-alert-button {
     width: 300px;
     border-radius: 50px;
     border: 1px solid var(--primary-color-font);
@@ -532,7 +532,7 @@ button.to-homepage {
     box-shadow: 0px 0px 26px 6px;
 }
 
-.alertContainer {
+.alert-container {
     padding: 16px;
     text-align: center;
     border: 1px solid var(--primary-color-font);
@@ -558,8 +558,8 @@ hr {
 }
 
 @media screen and (max-width: 300px) {
-    .cancelAlertBtn,
-    .deleteAlertBtn {
+    .cancel-alert-button,
+    .delete-alert-button {
         width: 100%;
     }
 }
@@ -622,7 +622,7 @@ input#date {
         font-size: 24px;
     }
     /* delete modal */
-    .deleteAlertBtn {
+    .delete-alert-button {
         font-size: 18px;
     }
     /* page404 */
@@ -698,7 +698,7 @@ input#date {
         font-size: 60px;
     }
     /* modal */
-    .modala {
+    .add-modal {
         height: 1500px;
     }
     .inputs__container {
@@ -726,7 +726,7 @@ input#date {
     .alert-delete-p {
         font-size: 32px;
     }
-    .deleteAlertBtn {
+    .delete-alert-button {
         width: 350px;
         height: 70px;
         font-size: 26px;

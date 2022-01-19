@@ -467,7 +467,7 @@ let modal = document.getElementById('modal-box');
 
 function createModal() {
     const modalDiv = document.createElement('div');
-    modalDiv.setAttribute('class', 'modala');
+    modalDiv.setAttribute('class', 'add-modal');
 
     const modalContent = document.createElement('div');
     modalContent.setAttribute('class', 'modal__content');
@@ -595,7 +595,7 @@ function createModalAlert() {
     formAlert.setAttribute('class', 'modal-content');
 
     const divAlertContainer = document.createElement('div');
-    divAlertContainer.setAttribute('class', 'alertContainer');
+    divAlertContainer.setAttribute('class', 'alert-container');
 
     const titleAlert = document.createElement('h1');
     titleAlert.setAttribute('class', 'alert-title')
@@ -610,13 +610,13 @@ function createModalAlert() {
 
     const cancelAlertBtn = document.createElement('button');
     cancelAlertBtn.setAttribute('type', 'button');
-    cancelAlertBtn.setAttribute('class', 'button cancelAlertBtn');
+    cancelAlertBtn.setAttribute('class', 'button cancel-alert-button');
     cancelAlertBtn.textContent = 'Cancel';
     cancelAlertBtn.addEventListener('click', hideModalAlert);
 
     const deleteAlertBtn = document.createElement('button');
     deleteAlertBtn.setAttribute('type', 'button');
-    deleteAlertBtn.setAttribute('class', 'deleteAlertBtn');
+    deleteAlertBtn.setAttribute('class', 'delete-alert-button');
     deleteAlertBtn.textContent = 'Delete';
 
     divAlert.appendChild(formAlert);
@@ -702,7 +702,7 @@ closeModal.addEventListener('click', hideModal);
 
 // GETTING THE ELEMENTS TO CLOSE THE MODAL ALERT
 let modalOverlayAlert = document.querySelector('.modal__overlay__alert');
-let closeModalAlert = document.querySelector('.cancelAlertBtn');
+let closeModalAlert = document.querySelector('.cancel-alert-button');
 
 // OPEN MODAL ALERT FUNCTION, called directly in the function that creates the ADD BUTTON
 function openModalAlert() {
@@ -712,7 +712,7 @@ function openModalAlert() {
 }
 
 // add event listener for the delete button from modal
-let btnDeleteAlert = document.querySelector('.deleteAlertBtn');
+let btnDeleteAlert = document.querySelector('.delete-alert-button');
 btnDeleteAlert.addEventListener('click', (e) => {
     deleteArticle(articleId);
     hideModalAlert();
