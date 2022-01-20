@@ -1029,7 +1029,6 @@ function locationHashChange() {
     }
     if (hash === '#/not-found') {
         createPage404();
-        closeDomSpinner();
         return;
     }
     if (hash.includes('#/article/') && hash.substring(10)) {
